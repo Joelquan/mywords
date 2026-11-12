@@ -177,8 +177,80 @@
     filter:drop-shadow(0 4px 6px rgba(43,30,12,.45));
   }
   .seal svg{display:block;width:100%;height:100%;}
-  section.block{padding:30px 32px;}
+  section.block{padding:0;}
   section.block + section.block{border-top:1px solid var(--hair);}
+  .phase-body{display:none;padding:30px 32px;}
+  .phase-body.open{display:block;animation:reveal .5s ease both;}
+  @keyframes reveal{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  .cover{
+    display:flex;flex-direction:column;align-items:center;gap:11px;
+    width:100%;background:transparent;border:none;cursor:pointer;
+    font-family:inherit;padding:36px 26px 32px;color:var(--label);text-align:center;
+    transition:opacity .25s;
+  }
+  .cover .cover-seal{width:52px;height:52px;color:var(--mid);opacity:.92;}
+  .cover .cover-seal svg{display:block;width:100%;height:100%;}
+  body[data-theme="papyrus"] .cover .cover-seal{color:#7E241C;}
+  body[data-theme="papyrus"] .cover{
+    background:linear-gradient(180deg, rgba(255,250,230,.38), rgba(122,90,40,.07));
+  }
+  .cover .cover-label{
+    font-size:.78rem;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--label);font-weight:bold;
+  }
+  .cover .cover-hint{
+    font-size:.86rem;color:var(--page-label);font-style:italic;letter-spacing:.05em;
+  }
+  .cover:hover .cover-label{color:var(--on-card);}
+  body[data-theme="papyrus"] .cover:hover .cover-label{color:#7E241C;}
+  .cover.waiting{opacity:.48;}
+  .cover.shake{animation:shake .32s ease;}
+  @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}
+  .scene{
+    position:relative;border-radius:18px;overflow:hidden;
+    border:1px solid var(--card-border);margin-top:18px;
+    box-shadow:0 18px 44px var(--shadow2), inset 0 1px 0 var(--hl);
+    text-align:left;
+  }
+  .scene svg{display:block;width:100%;height:auto;}
+  .scene .greet{
+    position:absolute;top:0;left:0;right:0;padding:15px 19px 30px;
+    color:#FFFFFF;
+    background:linear-gradient(180deg, rgba(3,10,22,.52), rgba(3,10,22,0));
+  }
+  .scene[data-time="morning"] .greet, .scene[data-time="afternoon"] .greet{
+    color:#14303F;
+    background:linear-gradient(180deg, rgba(255,255,255,.42), rgba(255,255,255,0));
+  }
+  .greet-line{font-size:1.42rem;letter-spacing:.03em;line-height:1.2;}
+  .greet-slot{
+    margin-top:4px;font-size:.7rem;letter-spacing:.28em;text-transform:uppercase;opacity:.88;
+  }
+  .tabs{display:flex;gap:8px;margin:14px 0 0;}
+  .tab{
+    flex:1;font-family:inherit;cursor:pointer;text-align:center;
+    background:linear-gradient(180deg, var(--nav-bg-a), var(--nav-bg-b));
+    color:var(--nav-ink);border:1px solid var(--nav-border);border-radius:12px;
+    padding:10px 4px 9px;position:relative;
+    box-shadow:0 4px 14px var(--shadow2), inset 0 1px 0 var(--hl);
+    transition:background .2s, transform .12s;
+  }
+  .tab .t{display:block;font-size:.96rem;letter-spacing:.04em;}
+  .tab .s{
+    display:block;margin-top:3px;font-size:.6rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--label);
+  }
+  .tab .nowtag{
+    display:none;margin-top:5px;font-size:.58rem;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--label);
+  }
+  .tab.now .nowtag{display:block;}
+  .tab.now .nowtag::before{content:"● ";font-size:.5rem;vertical-align:2px;}
+  .tab.on{
+    background:linear-gradient(180deg, var(--btn-a), var(--btn-b));
+    color:var(--btn-ink);border-color:var(--btn-border);font-weight:bold;
+  }
+  .tab.on .s, .tab.on .nowtag{color:var(--btn-ink);opacity:.85;}
   .block h2{
     display:flex;
     align-items:center;
@@ -247,9 +319,12 @@
     box-shadow:inset 0 1px 0 var(--hl), 0 10px 24px var(--shadow2);
   }
   @media (max-width:480px){
-    section.block{padding:25px 22px;}
+    .phase-body{padding:25px 22px;}
+    .cover{padding:32px 20px 28px;}
     header h1{font-size:1.9rem;}
     .verse-text{font-size:1.36rem;}
+    .tab .t{font-size:.86rem;}
+    .greet-line{font-size:1.24rem;}
   }
   footer.actions{
     display:flex;
@@ -358,6 +433,18 @@
     <h1>My Words</h1>
     <div class="dateline" id="dateline"></div>
     <div class="theme" id="themeLine"></div>
+    <div class="scene" id="sceneBox" data-time="morning">
+      <div id="sceneArt"></div>
+      <div class="greet">
+        <div class="greet-line" id="greetLine">Good morning</div>
+        <div class="greet-slot" id="greetSlot">Morning · Who Christ Is</div>
+      </div>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Time of day">
+      <button type="button" class="tab" id="tab-morning" data-slot="morning" role="tab" aria-selected="false"><span class="t">Morning</span><span class="s">Who Christ Is</span><span class="nowtag">Now</span></button>
+      <button type="button" class="tab" id="tab-afternoon" data-slot="afternoon" role="tab" aria-selected="false"><span class="t">Afternoon</span><span class="s">General</span><span class="nowtag">Now</span></button>
+      <button type="button" class="tab" id="tab-evening" data-slot="evening" role="tab" aria-selected="false"><span class="t">Evening</span><span class="s">Who I Am in Christ</span><span class="nowtag">Now</span></button>
+    </div>
   </header>
 
   <div class="themebar" role="group" aria-label="Theme">
@@ -385,17 +472,38 @@
   <main class="card">
     <div class="sealrow"><div class="seal" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="63" cy="64" r="52" fill="#5E170E" opacity=".55"/><circle cx="60" cy="60" r="52" fill="#7E241C"/><circle cx="60" cy="60" r="52" fill="none" stroke="#5E170E" stroke-width="3"/><circle cx="60" cy="60" r="41" fill="none" stroke="#F0D9B5" stroke-width="1.6" opacity=".65"/><path d="M60 33 V79 M45 49 H75" stroke="#F3E2BC" stroke-width="7" stroke-linecap="round" fill="none"/><text x="60" y="99" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" letter-spacing="2" fill="#F3E2BC">MW</text></svg></div></div>
     <section class="block verse">
-      <h2>Verse</h2>
-      <p class="verse-text" id="verseText"></p>
-      <p class="verse-ref" id="verseRef"></p>
+      <button type="button" class="cover" id="cover0" aria-expanded="false" aria-controls="phase0">
+        <span class="cover-seal" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="currentColor" stroke-width="3" opacity=".5"/><circle cx="60" cy="60" r="41" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".7"/><path d="M60 33 V79 M45 49 H75" stroke="currentColor" stroke-width="7" stroke-linecap="round" fill="none"/><text x="60" y="99" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" letter-spacing="2" fill="currentColor">MW</text></svg></span>
+        <span class="cover-label">The Verse</span>
+        <span class="cover-hint">Tap to reveal</span>
+      </button>
+      <div class="phase-body" id="phase0">
+        <h2>The Verse</h2>
+        <p class="verse-text" id="verseText"></p>
+        <p class="verse-ref" id="verseRef"></p>
+      </div>
     </section>
     <section class="block affirmation">
-      <h2>Affirmation</h2>
-      <p class="affirmation-text" id="affirmText"></p>
+      <button type="button" class="cover" id="cover1" aria-expanded="false" aria-controls="phase1">
+        <span class="cover-seal" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="currentColor" stroke-width="3" opacity=".5"/><circle cx="60" cy="60" r="41" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".7"/><path d="M60 33 V79 M45 49 H75" stroke="currentColor" stroke-width="7" stroke-linecap="round" fill="none"/><text x="60" y="99" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" letter-spacing="2" fill="currentColor">MW</text></svg></span>
+        <span class="cover-label">The Affirmation</span>
+        <span class="cover-hint">Tap to reveal</span>
+      </button>
+      <div class="phase-body" id="phase1">
+        <h2>The Affirmation</h2>
+        <p class="affirmation-text" id="affirmText"></p>
+      </div>
     </section>
     <section class="block action">
-      <h2>Action</h2>
-      <p class="action-text" id="actionText"></p>
+      <button type="button" class="cover" id="cover2" aria-expanded="false" aria-controls="phase2">
+        <span class="cover-seal" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="currentColor" stroke-width="3" opacity=".5"/><circle cx="60" cy="60" r="41" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".7"/><path d="M60 33 V79 M45 49 H75" stroke="currentColor" stroke-width="7" stroke-linecap="round" fill="none"/><text x="60" y="99" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" letter-spacing="2" fill="currentColor">MW</text></svg></span>
+        <span class="cover-label">The Action</span>
+        <span class="cover-hint">Tap to reveal</span>
+      </button>
+      <div class="phase-body" id="phase2">
+        <h2>The Action</h2>
+        <p class="action-text" id="actionText"></p>
+      </div>
     </section>
   </main>
 
@@ -415,7 +523,7 @@
 <div class="share-menu" id="shareMenu">
   <div class="share-box">
     <h2>Share Day <span id="shareDayNum"></span></h2>
-    <p>Share the verse, the affirmation and the action for this day.</p>
+    <p><span id="shareSlotLine"></span><br>Share the verse, the affirmation and the action for this time of day.</p>
     <button id="shareTextBtn" type="button">Share as text</button>
     <button id="sharePicBtn" type="button">Share as picture</button>
     <button id="shareCancelBtn" type="button">Cancel</button>
@@ -675,6 +783,139 @@ function drawSealMark(ctx, cx, cy, r){
   ctx.textAlign = "left"; ctx.textBaseline = "top";
 }
 
+/* ===== Three times of day: Morning (Who Christ Is), Afternoon (General),
+   Evening (Who I Am in Christ). The app reads the visitor's clock and the
+   season, and the header scene follows both. ===== */
+const SLOTS = {
+  morning: { name: "Morning", title: "Who Christ Is", greet: "Good morning" },
+  afternoon: { name: "Afternoon", title: "General", greet: "Good afternoon" },
+  evening: { name: "Evening", title: "Who I Am in Christ", greet: "Good evening" }
+};
+const SLOT_ORDER = ["morning", "afternoon", "evening"];
+function slotForNow(){
+  const h = new Date().getHours();
+  if (h >= 5 && h < 12) return "morning";
+  if (h >= 12 && h < 17) return "afternoon";
+  return "evening";
+}
+let currentSlot = slotForNow();
+function seasonForDay(day){
+  const m = new Date(new Date().getFullYear(), 0, day).getMonth();
+  if (m >= 2 && m <= 4) return "spring";
+  if (m >= 5 && m <= 7) return "summer";
+  if (m >= 8 && m <= 10) return "autumn";
+  return "winter";
+}
+const SCENE_SKY = {
+  morning: ["#79A9D6", "#CFE3EF", "#F8DCAE", "#F9BE78"],
+  afternoon: ["#3E8FD2", "#7FBEEA", "#CDEFFB", "#EAF9FF"],
+  evening: ["#081A36", "#0E2C58", "#274B7A", "#8A4A3A"]
+};
+const SCENE_WINTER_SKY = {
+  morning: ["#A8BECB", "#DCE8EC", "#F2E4C4", "#EFC9A0"],
+  afternoon: ["#7FA8C4", "#B9D2E2", "#E2EEF4", "#F0F6F9"],
+  evening: ["#0A1B33", "#14304F", "#33506E", "#6E5A52"]
+};
+const SCENE_LAND = {
+  spring: { far: "#9DBE6E", mid: "#67A657", near: "#35693F", tree: "#274E30" },
+  summer: { far: "#6FA862", mid: "#3F7D44", near: "#245434", tree: "#1C4228" },
+  autumn: { far: "#C08A4A", mid: "#A05E2C", near: "#63331A", tree: "#47240F" },
+  winter: { far: "#B9CBD8", mid: "#8FA9BC", near: "#5E7C90", tree: "#33505F" }
+};
+const SCENE_WATER = { morning: "#EFC287", afternoon: "#9FD0E8", evening: "#1D4066" };
+const SCENE_STARS = [[36,24,1.6,.9],[86,54,1.1,.6],[140,20,1.3,.8],[196,44,1,.5],
+  [238,16,1.5,.85],[300,34,1.1,.55],[352,20,1.4,.8],[404,48,1,.5],[448,18,1.2,.7],
+  [520,88,1.2,.6],[556,30,1.5,.85],[120,84,1,.45],[60,96,1.1,.5],[330,66,1,.45],
+  [560,120,1,.4],[24,130,1,.35]];
+function pineTree(x, y, s, c){
+  return '<g fill="' + c + '">' +
+    '<polygon points="' + (x - 16 * s) + ',' + (y - 12 * s) + ' ' + x + ',' + (y - 38 * s) + ' ' + (x + 16 * s) + ',' + (y - 12 * s) + '"/>' +
+    '<polygon points="' + (x - 13 * s) + ',' + (y - 24 * s) + ' ' + x + ',' + (y - 48 * s) + ' ' + (x + 13 * s) + ',' + (y - 24 * s) + '"/>' +
+    '<polygon points="' + (x - 10 * s) + ',' + (y - 36 * s) + ' ' + x + ',' + (y - 56 * s) + ' ' + (x + 10 * s) + ',' + (y - 36 * s) + '"/>' +
+    '<rect x="' + (x - 2 * s) + '" y="' + (y - 12 * s) + '" width="' + (4 * s) + '" height="' + (12 * s) + '"/></g>';
+}
+function bareTree(x, y, s, c){
+  return '<g stroke="' + c + '" stroke-width="' + (3 * s) + '" fill="none" stroke-linecap="round">' +
+    '<path d="M' + x + ' ' + y + ' V' + (y - 32 * s) + '"/>' +
+    '<path d="M' + x + ' ' + (y - 18 * s) + ' L' + (x - 12 * s) + ' ' + (y - 30 * s) + '"/>' +
+    '<path d="M' + x + ' ' + (y - 24 * s) + ' L' + (x + 11 * s) + ' ' + (y - 36 * s) + '"/>' +
+    '<path d="M' + x + ' ' + (y - 32 * s) + ' L' + (x - 6 * s) + ' ' + (y - 44 * s) + '"/></g>';
+}
+function blossomTree(x, y, s, trunk){
+  return '<g><rect x="' + (x - 2.5 * s) + '" y="' + (y - 20 * s) + '" width="' + (5 * s) + '" height="' + (20 * s) + '" fill="' + trunk + '"/>' +
+    '<circle cx="' + (x - 13 * s) + '" cy="' + (y - 24 * s) + '" r="' + (11 * s) + '" fill="#E9A9C0"/>' +
+    '<circle cx="' + (x + 13 * s) + '" cy="' + (y - 25 * s) + '" r="' + (12 * s) + '" fill="#EFC0D2"/>' +
+    '<circle cx="' + x + '" cy="' + (y - 33 * s) + '" r="' + (16 * s) + '" fill="#E9A9C0"/></g>';
+}
+function sceneSVG(time, season){
+  const sky = (season === "winter" ? SCENE_WINTER_SKY : SCENE_SKY)[time];
+  const land = SCENE_LAND[season];
+  let water = SCENE_WATER[time];
+  if (season === "winter") water = "#D7E6EE";
+  let s = '<svg viewBox="0 0 580 190" preserveAspectRatio="xMidYMid slice" role="img" aria-label="' + time + " in " + season + '">';
+  s += '<defs><linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="' + sky[0] + '"/><stop offset=".45" stop-color="' + sky[1] + '"/>' +
+    '<stop offset=".78" stop-color="' + sky[2] + '"/><stop offset="1" stop-color="' + sky[3] + '"/></linearGradient></defs>';
+  s += '<rect width="580" height="190" fill="url(#skyG)"/>';
+  if (time === "morning"){
+    s += '<g fill="rgba(255,255,255,.5)"><ellipse cx="118" cy="40" rx="44" ry="9"/><ellipse cx="468" cy="28" rx="54" ry="8"/></g>';
+    s += '<circle cx="290" cy="88" r="56" fill="rgba(255,214,130,.32)"/>';
+    s += '<circle cx="290" cy="84" r="34" fill="#FFE9A8"/>';
+  }
+  if (time === "afternoon"){
+    s += '<circle cx="472" cy="40" r="34" fill="rgba(255,240,170,.38)"/>';
+    s += '<circle cx="472" cy="40" r="21" fill="#FFF3B0"/>';
+    s += '<g fill="rgba(255,255,255,.92)"><ellipse cx="112" cy="36" rx="40" ry="10"/><ellipse cx="140" cy="28" rx="26" ry="9"/>' +
+      '<ellipse cx="300" cy="20" rx="30" ry="8"/><ellipse cx="522" cy="64" rx="30" ry="8"/></g>';
+  }
+  s += '<path d="M0 104 L90 70 L180 96 L270 62 L360 92 L450 68 L580 98 L580 190 L0 190 Z" fill="' + land.far + '"/>';
+  if (season === "winter")
+    s += '<polyline points="0,104 90,70 180,96 270,62 360,92 450,68 580,98" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="5" stroke-linejoin="round"/>';
+  s += '<path d="M0 128 L110 96 L230 124 L350 94 L470 120 L580 100 L580 190 L0 190 Z" fill="' + land.mid + '"/>';
+  if (season === "winter")
+    s += '<polyline points="0,128 110,96 230,124 350,94 470,120 580,100" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="4" stroke-linejoin="round"/>';
+  s += pineTree(56, 122, .75, land.tree);
+  s += pineTree(150, 110, .58, land.tree);
+  s += pineTree(516, 114, .68, land.tree);
+  s += '<path d="M0 158 L140 138 L300 160 L440 140 L580 162 L580 190 L0 190 Z" fill="' + land.near + '"/>';
+  s += '<path d="M262 190 C288 172 302 164 330 152 L358 152 C332 166 316 176 308 190 Z" fill="' + water + '" opacity=".85"/>';
+  if (season === "winter"){
+    s += bareTree(34, 178, 1.1, land.tree);
+    s += pineTree(94, 178, .9, land.tree);
+    s += bareTree(498, 180, 1.15, land.tree);
+    s += pineTree(548, 170, .85, land.tree);
+  } else if (season === "spring"){
+    s += pineTree(34, 174, 1.15, land.tree);
+    s += pineTree(94, 178, .9, land.tree);
+    s += blossomTree(498, 180, 1.05, land.tree);
+    s += pineTree(548, 170, .85, land.tree);
+  } else {
+    s += pineTree(34, 174, 1.15, land.tree);
+    s += pineTree(94, 178, .9, land.tree);
+    s += pineTree(498, 176, 1.2, land.tree);
+    s += pineTree(548, 170, .85, land.tree);
+  }
+  if (time === "evening") s += '<rect width="580" height="190" fill="#081C3E" opacity=".34"/>';
+  if (time === "morning") s += '<rect width="580" height="190" fill="#FF9E50" opacity=".07"/>';
+  if (time === "evening"){
+    s += '<g fill="#FFFFFF">';
+    SCENE_STARS.forEach(function(st){
+      s += '<circle cx="' + st[0] + '" cy="' + st[1] + '" r="' + st[2] + '" opacity="' + st[3] + '"/>';
+    });
+    s += '</g>';
+    s += '<circle cx="472" cy="52" r="31" fill="rgba(220,235,255,.13)"/>';
+    s += '<mask id="moonM"><rect width="580" height="190" fill="white"/><circle cx="487" cy="41" r="16.5" fill="black"/></mask>';
+    s += '<circle cx="472" cy="52" r="20" fill="#F4F7FB" mask="url(#moonM)"/>';
+  }
+  if (time === "morning"){
+    s += '<g stroke="#3A4A56" stroke-width="2" fill="none" stroke-linecap="round" opacity=".75">' +
+      '<path d="M206 72 q6 -6 12 0 q6 -6 12 0"/><path d="M246 58 q5 -5 10 0 q5 -5 10 0"/>' +
+      '<path d="M352 66 q5 -5 10 0 q5 -5 10 0"/></g>';
+  }
+  s += '</svg>';
+  return s;
+}
+
 let currentDay = todayDayNumber();
 
 function todayDayNumber(){
@@ -690,10 +931,17 @@ function dateLabelForDay(day){
   return names[d.getMonth()] + " " + d.getDate();
 }
 function getSaved(){
-  try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || []; }
-  catch(e){ return []; }
+  try {
+    const raw = JSON.parse(localStorage.getItem(SAVE_KEY)) || [];
+    if (!Array.isArray(raw)) return [];
+    return raw.map(function(x){
+      if (typeof x === "number") return x + ":afternoon";
+      return x;
+    }).filter(function(x){ return /^\d+:(morning|afternoon|evening)$/.test(x); });
+  } catch(e){ return []; }
 }
 function setSaved(list){ localStorage.setItem(SAVE_KEY, JSON.stringify(list)); }
+function saveKey(){ return currentDay + ":" + currentSlot; }
 function toast(msg){
   const t = document.getElementById("toast");
   t.textContent = msg;
@@ -707,51 +955,132 @@ function render(day){
   if(!e) return;
   document.getElementById("dateline").textContent =
     dateLabelForDay(currentDay) + " · Day " + currentDay + " of 365";
-  document.getElementById("themeLine").textContent = e.theme;
-  document.getElementById("verseText").textContent = e.verse;
-  document.getElementById("verseRef").textContent = e.ref + " (KJV)";
-  document.getElementById("affirmText").textContent = e.affirmation;
-  document.getElementById("actionText").textContent = e.action;
-  const saved = getSaved();
+  renderSlot();
+  renderSaved();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+function renderSlot(){
+  const e = DATA[currentDay - 1];
+  if(!e) return;
+  const s = e[currentSlot];
+  const S = SLOTS[currentSlot];
+  document.getElementById("themeLine").textContent =
+    currentSlot === "afternoon" ? e.theme : s.theme;
+  document.getElementById("verseText").textContent = s.verse;
+  document.getElementById("verseRef").textContent = s.ref + " (KJV)";
+  document.getElementById("affirmText").textContent = s.affirmation;
+  document.getElementById("actionText").textContent = s.action;
+  document.getElementById("greetLine").textContent = S.greet;
+  document.getElementById("greetSlot").textContent = S.name + " · " + S.title;
+  const box = document.getElementById("sceneBox");
+  box.setAttribute("data-time", currentSlot);
+  document.getElementById("sceneArt").innerHTML = sceneSVG(currentSlot, seasonForDay(currentDay));
+  const nowSlot = slotForNow();
+  SLOT_ORDER.forEach(function(name){
+    const tab = document.getElementById("tab-" + name);
+    tab.classList.toggle("on", name === currentSlot);
+    tab.classList.toggle("now", name === nowSlot);
+    tab.setAttribute("aria-selected", name === currentSlot ? "true" : "false");
+  });
+  resetVeil();
+  updateSaveBtn();
+}
+function updateSaveBtn(){
   const btn = document.getElementById("saveBtn");
-  if(saved.includes(currentDay)){
+  if(getSaved().includes(saveKey())){
     btn.textContent = "Saved";
     btn.classList.add("saved");
   } else {
     btn.textContent = "Save";
     btn.classList.remove("saved");
   }
-  renderSaved();
-  window.scrollTo({top:0, behavior:"smooth"});
 }
+/* Click to reveal: the three phases open in order, a classic uncovering. */
+let revealStep = 0;
+const PHASE_NAMES = ["The Verse", "The Affirmation", "The Action"];
+function resetVeil(){
+  revealStep = 0;
+  for (let i = 0; i < 3; i++){
+    const c = document.getElementById("cover" + i);
+    c.style.display = "";
+    c.setAttribute("aria-expanded", "false");
+    c.classList.toggle("waiting", i > 0);
+    document.getElementById("phase" + i).classList.remove("open");
+  }
+}
+function revealPhase(i){
+  if (i < revealStep) return;
+  if (i > revealStep){
+    const c = document.getElementById("cover" + i);
+    c.classList.remove("shake");
+    void c.offsetWidth;
+    c.classList.add("shake");
+    toast("The three phases open in order. Begin with " + PHASE_NAMES[revealStep] + ".");
+    return;
+  }
+  const c = document.getElementById("cover" + i);
+  c.style.display = "none";
+  c.setAttribute("aria-expanded", "true");
+  document.getElementById("phase" + i).classList.add("open");
+  revealStep++;
+  if (revealStep < 3)
+    document.getElementById("cover" + revealStep).classList.remove("waiting");
+}
+(function wireTimeControls(){
+  for (let i = 0; i < 3; i++){
+    (function(idx){
+      document.getElementById("cover" + idx).addEventListener("click", function(){ revealPhase(idx); });
+    })(i);
+  }
+  SLOT_ORDER.forEach(function(name){
+    document.getElementById("tab-" + name).addEventListener("click", function(){
+      if (currentSlot !== name){
+        currentSlot = name;
+        renderSlot();
+      }
+    });
+  });
+})();
 function renderSaved(){
   const list = document.getElementById("savedList");
-  const saved = getSaved().slice().sort((a,b)=>a-b);
+  const order = { morning: 0, afternoon: 1, evening: 2 };
+  const saved = getSaved().slice().sort(function(a, b){
+    const pa = a.split(":"), pb = b.split(":");
+    return (parseInt(pa[0], 10) - parseInt(pb[0], 10)) || (order[pa[1]] - order[pb[1]]);
+  });
   list.innerHTML = "";
   if(saved.length === 0){
     const p = document.createElement("p");
     p.className = "empty";
-    p.textContent = "No saved days yet. Tap Save on any day and it will wait for you here.";
+    p.textContent = "No saved times yet. Tap Save on any morning, afternoon, or evening and it will wait for you here.";
     list.appendChild(p);
     return;
   }
-  saved.forEach(function(d){
+  saved.forEach(function(key){
+    const parts = key.split(":");
+    const d = parseInt(parts[0], 10), sl = parts[1];
     const e = DATA[d - 1];
+    const s = e ? e[sl] : null;
     const row = document.createElement("div");
     row.className = "saved-item";
     const open = document.createElement("button");
     open.className = "open";
     open.type = "button";
-    open.textContent = "Day " + d + ": " + (e ? e.ref : "");
-    open.addEventListener("click", function(){ render(d); });
+    open.textContent = "Day " + d + " · " + SLOTS[sl].name + ": " + SLOTS[sl].title +
+      (s ? " · " + s.ref : "");
+    open.addEventListener("click", function(){
+      currentSlot = sl;
+      render(d);
+    });
     const un = document.createElement("button");
     un.className = "unsave";
     un.type = "button";
     un.textContent = "Unsave";
     un.addEventListener("click", function(){
-      setSaved(getSaved().filter(function(x){ return x !== d; }));
-      render(currentDay);
-      toast("Day " + d + " removed from saved days.");
+      setSaved(getSaved().filter(function(x){ return x !== key; }));
+      updateSaveBtn();
+      renderSaved();
+      toast("Day " + d + " " + SLOTS[sl].name.toLowerCase() + " removed from saved.");
     });
     row.appendChild(open);
     row.appendChild(un);
@@ -783,26 +1112,32 @@ document.getElementById("dateBtn").addEventListener("click", function(){
 });
 document.getElementById("saveBtn").addEventListener("click", function(){
   let saved = getSaved();
-  if(saved.includes(currentDay)){
-    saved = saved.filter(function(x){ return x !== currentDay; });
+  const key = saveKey();
+  if(saved.includes(key)){
+    saved = saved.filter(function(x){ return x !== key; });
     setSaved(saved);
-    toast("Day " + currentDay + " removed from saved days.");
+    toast("Day " + currentDay + " " + SLOTS[currentSlot].name.toLowerCase() + " removed from saved.");
   } else {
-    saved.push(currentDay);
+    saved.push(key);
     setSaved(saved);
-    toast("Day " + currentDay + " saved.");
+    toast("Day " + currentDay + " " + SLOTS[currentSlot].name.toLowerCase() + " saved.");
   }
-  render(currentDay);
+  updateSaveBtn();
+  renderSaved();
 });
 function shareTextForDay(){
   const e = DATA[currentDay - 1];
-  return "My Words \u00b7 Day " + currentDay + "\n\n" +
-    "VERSE\n" + e.verse + "\n" + e.ref + " (KJV)\n\n" +
-    "AFFIRMATION\n" + e.affirmation + "\n\n" +
-    "ACTION\n" + e.action;
+  const s = e[currentSlot];
+  const S = SLOTS[currentSlot];
+  return "My Words \u00b7 Day " + currentDay + " \u00b7 " + S.name + ": " + S.title + "\n\n" +
+    "VERSE\n" + s.verse + "\n" + s.ref + " (KJV)\n\n" +
+    "AFFIRMATION\n" + s.affirmation + "\n\n" +
+    "ACTION\n" + s.action;
 }
 function openShareMenu(){
   document.getElementById("shareDayNum").textContent = currentDay;
+  document.getElementById("shareSlotLine").textContent =
+    SLOTS[currentSlot].name + ": " + SLOTS[currentSlot].title;
   document.getElementById("shareMenu").classList.add("open");
 }
 function closeShareMenu(){
@@ -838,10 +1173,11 @@ function wrapLines(ctx, text, maxWidth){
   if(line) lines.push(line);
   return lines;
 }
-function buildCardCanvas(e){
+function buildCardCanvas(e, slotLabel){
   const pal = cardPal();
   const W = 1080;
   const marginX = 92, topPad = pal.seal ? 330 : 104, bottomPad = 140;
+  const slotH = 60;
   const maxW = W - marginX * 2;
   const measure = document.createElement("canvas").getContext("2d");
   let scale = 1, layout = null, H = 1920;
@@ -859,8 +1195,8 @@ function buildCardCanvas(e){
       labelH + actLines.length * bs * 1.5;
     layout = { scale: scale, vs: vs, bs: bs, labelH: labelH, refH: refH, gap: gap, divH: divH,
       verseLines: verseLines, affLines: affLines, actLines: actLines };
-    if(topPad + contentH + bottomPad <= 1920){ H = 1920; break; }
-    if(scale <= 0.5){ H = Math.ceil(topPad + contentH + bottomPad); break; }
+    if(topPad + slotH + contentH + bottomPad <= 1920){ H = 1920; break; }
+    if(scale <= 0.5){ H = Math.ceil(topPad + slotH + contentH + bottomPad); break; }
     scale = Math.round((scale - 0.025) * 1000) / 1000;
   }
   const canvas = document.createElement("canvas");
@@ -902,6 +1238,14 @@ function buildCardCanvas(e){
   ctx.textBaseline = "top";
   ctx.textAlign = "left";
   let y = topPad;
+  ctx.font = "bold 30px Georgia, 'Times New Roman', serif";
+  try { ctx.letterSpacing = "5px"; } catch(err){}
+  ctx.fillStyle = pal.label;
+  ctx.textAlign = "center";
+  ctx.fillText(String(slotLabel || "").toUpperCase(), W / 2, y + 2);
+  try { ctx.letterSpacing = "0px"; } catch(err){}
+  ctx.textAlign = "left";
+  y += slotH;
   const s = layout.scale;
   function drawLabel(txt){
     ctx.font = "bold " + Math.round(32 * s) + "px Georgia, 'Times New Roman', serif";
@@ -986,11 +1330,11 @@ function downloadBlob(blob, name){
 }
 document.getElementById("sharePicBtn").addEventListener("click", function(){
   closeShareMenu();
-  const e = DATA[currentDay - 1];
+  const e = DATA[currentDay - 1][currentSlot];
   let canvas;
-  try { canvas = buildCardCanvas(e); }
+  try { canvas = buildCardCanvas(e, SLOTS[currentSlot].name + ": " + SLOTS[currentSlot].title); }
   catch(err){ toast("Picture could not be made on this device."); return; }
-  const fileName = "mywords-day-" + currentDay + ".png";
+  const fileName = "mywords-day-" + currentDay + "-" + currentSlot + ".png";
   canvas.toBlob(function(blob){
     if(!blob){ toast("Picture could not be made on this device."); return; }
     let usedShare = false;
