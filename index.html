@@ -52,19 +52,52 @@
     color:var(--head-ink);
     margin-bottom:12px;
   }
-  .themebar{
-    display:flex;
-    flex-wrap:wrap;
-    gap:7px;
-    justify-content:center;
-    margin:16px 0 0;
+  .scrim{
+    position:fixed;inset:0;z-index:55;
+    background:rgba(2,8,18,.52);
+    opacity:0;transition:opacity .18s ease;
   }
+  .scrim[hidden]{display:none;}
+  .scrim.open{opacity:1;}
+  .drawer{
+    position:fixed;left:0;right:0;bottom:0;z-index:56;
+    max-width:580px;margin:0 auto;
+    background:linear-gradient(168deg, var(--card-a), var(--card-b));
+    border:1px solid var(--card-border);border-bottom:none;
+    border-radius:18px 18px 0 0;
+    box-shadow:0 -18px 44px var(--shadow2), inset 0 1px 0 var(--hl);
+    padding:12px 16px calc(16px + env(safe-area-inset-bottom));
+    transform:translateY(106%);transition:transform .18s ease;
+  }
+  .drawer[hidden]{display:none;}
+  .drawer.open{transform:translateY(0);}
+  .drawer-head{
+    display:flex;align-items:center;justify-content:space-between;
+    margin:2px 2px 10px;
+  }
+  .drawer-title{
+    font-size:.76rem;letter-spacing:.3em;text-transform:uppercase;
+    color:var(--label);font-weight:bold;
+  }
+  .drawer-close{
+    font-family:inherit;cursor:pointer;
+    width:32px;height:32px;border-radius:999px;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:1.15rem;line-height:1;
+    background:linear-gradient(180deg, var(--nav-bg-a), var(--nav-bg-b));
+    color:var(--nav-ink);border:1px solid var(--nav-border);
+    box-shadow:0 3px 10px var(--shadow2), inset 0 1px 0 var(--hl);
+  }
+  .drawer-close:active{transform:translateY(1px);}
+  .themelist{display:flex;flex-direction:column;gap:8px;}
   .tchip{
     font-family:inherit;
-    font-size:.82rem;
-    letter-spacing:.06em;
-    padding:8px 14px;
-    border-radius:999px;
+    display:flex;align-items:center;justify-content:space-between;
+    width:100%;text-align:left;
+    font-size:1rem;
+    letter-spacing:.05em;
+    padding:13px 16px;
+    border-radius:12px;
     cursor:pointer;
     background:linear-gradient(180deg, var(--nav-bg-a), var(--nav-bg-b));
     color:var(--nav-ink);
@@ -73,12 +106,14 @@
     transition:background .2s, transform .12s;
   }
   .tchip:active{transform:translateY(1px);}
+  .tchip .mark{font-size:.95rem;opacity:0;}
   .tchip.on{
     background:linear-gradient(180deg, var(--btn-a), var(--btn-b));
     color:var(--btn-ink);
     border-color:var(--btn-border);
     font-weight:bold;
   }
+  .tchip.on .mark{opacity:1;}
   nav.bar{
     display:flex;
     flex-wrap:wrap;
@@ -122,7 +157,6 @@
   }
   body[data-theme="papyrus"] .jump input{color-scheme:light;}
   .jump input::placeholder{color:var(--page-label);}
-  .jump input[type="date"]{width:150px;}
   button:focus-visible, input:focus-visible{outline:2px solid var(--label);outline-offset:2px;}
   .card{
     position:relative;
@@ -226,7 +260,6 @@
     box-shadow:0 14px 34px var(--shadow2), inset 0 1px 0 var(--hl);
   }
   .cpanel[hidden]{display:none;}
-  .cpanel .themebar{margin:0;}
   .cpanel nav.bar{margin:0;}
   .slotcaption{
     padding:16px 20px 0;text-align:center;
@@ -424,12 +457,17 @@
     <button type="button" class="itab" id="navTab" aria-expanded="false" aria-controls="navPanel" aria-label="Day navigation" title="Day navigation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7.5h12.5"/><path d="M13 3.8l3.7 3.7-3.7 3.7"/><path d="M20 16.5H7.5"/><path d="M11 12.8l-3.7 3.7 3.7 3.7"/></svg></button>
   </div>
 
-  <div class="cpanel" id="themePanel" hidden>
-    <div class="themebar" role="group" aria-label="Theme">
-      <button type="button" class="tchip" data-set-theme="river">River Blue</button>
-      <button type="button" class="tchip" data-set-theme="rot24">24 Colors</button>
-      <button type="button" class="tchip" data-set-theme="metal">Metallic</button>
-      <button type="button" class="tchip" data-set-theme="papyrus">Papyrus</button>
+  <div class="scrim" id="themeScrim" hidden></div>
+  <div class="drawer" id="themePanel" hidden role="dialog" aria-label="Theme">
+    <div class="drawer-head">
+      <span class="drawer-title">Theme</span>
+      <button type="button" class="drawer-close" id="themeClose" aria-label="Close themes">&times;</button>
+    </div>
+    <div class="themelist" role="group" aria-label="Theme">
+      <button type="button" class="tchip" data-set-theme="river"><span class="tname">Default</span><span class="mark" aria-hidden="true">&#10003;</span></button>
+      <button type="button" class="tchip" data-set-theme="rot24"><span class="tname">Color</span><span class="mark" aria-hidden="true">&#10003;</span></button>
+      <button type="button" class="tchip" data-set-theme="metal"><span class="tname">Metal</span><span class="mark" aria-hidden="true">&#10003;</span></button>
+      <button type="button" class="tchip" data-set-theme="papyrus"><span class="tname">Papyrus</span><span class="mark" aria-hidden="true">&#10003;</span></button>
     </div>
   </div>
 
@@ -444,13 +482,6 @@
       </span>
     </nav>
   </div>
-
-  <nav class="bar">
-    <span class="jump">
-      <input id="dateJump" type="date">
-      <button id="dateBtn" type="button">Open Date</button>
-    </span>
-  </nav>
 
   <main class="card">
     <div class="slotcaption" id="slotCaption"></div>
@@ -705,7 +736,7 @@ function setTheme(name){
   const chips = document.querySelectorAll(".tchip");
   for (let i = 0; i < chips.length; i++){
     (function(ch){
-      ch.addEventListener("click", function(){ setTheme(ch.getAttribute("data-set-theme")); });
+      ch.addEventListener("click", function(){ setTheme(ch.getAttribute("data-set-theme")); closeThemeDrawer(); });
     })(chips[i]);
   }
 })();
@@ -1126,30 +1157,75 @@ function renderSaved(){
     list.appendChild(row);
   });
 }
-function closeControlPanels(){
-  document.getElementById("themePanel").hidden = true;
-  document.getElementById("navPanel").hidden = true;
+/* The theme drawer: it slides up from the bottom over a scrim. Picking
+   a name applies that theme and closes the drawer; the close button,
+   the scrim, or a tap anywhere outside closes it with no change. */
+let drawerHideTimer = null;
+function openThemeDrawer(){
+  const d = document.getElementById("themePanel");
+  const scrim = document.getElementById("themeScrim");
+  if (drawerHideTimer){ clearTimeout(drawerHideTimer); drawerHideTimer = null; }
+  d.hidden = false;
+  scrim.hidden = false;
+  void d.offsetWidth;
+  d.classList.add("open");
+  scrim.classList.add("open");
+  document.getElementById("themeTab").setAttribute("aria-expanded", "true");
+}
+function closeThemeDrawer(){
+  const d = document.getElementById("themePanel");
+  const scrim = document.getElementById("themeScrim");
   document.getElementById("themeTab").setAttribute("aria-expanded", "false");
+  if (d.hidden){
+    scrim.hidden = true;
+    scrim.classList.remove("open");
+    return;
+  }
+  d.classList.remove("open");
+  scrim.classList.remove("open");
+  if (drawerHideTimer) clearTimeout(drawerHideTimer);
+  drawerHideTimer = setTimeout(function(){
+    d.hidden = true;
+    scrim.hidden = true;
+    drawerHideTimer = null;
+  }, 130);
+}
+function closeControlPanels(){
+  document.getElementById("navPanel").hidden = true;
   document.getElementById("navTab").setAttribute("aria-expanded", "false");
+  closeThemeDrawer();
 }
 (function wireControlPanels(){
   const themeTab = document.getElementById("themeTab");
   const navTab = document.getElementById("navTab");
-  const themePanel = document.getElementById("themePanel");
   const navPanel = document.getElementById("navPanel");
-  function toggle(panel, tab){
-    const willOpen = panel.hidden;
+  themeTab.addEventListener("click", function(ev){
+    ev.stopPropagation();
+    const d = document.getElementById("themePanel");
+    if (d.hidden || !d.classList.contains("open")){
+      closeControlPanels();
+      openThemeDrawer();
+    } else {
+      closeThemeDrawer();
+    }
+  });
+  navTab.addEventListener("click", function(ev){
+    ev.stopPropagation();
+    const willOpen = navPanel.hidden;
     closeControlPanels();
     if (willOpen){
-      panel.hidden = false;
-      tab.setAttribute("aria-expanded", "true");
+      navPanel.hidden = false;
+      navTab.setAttribute("aria-expanded", "true");
     }
-  }
-  themeTab.addEventListener("click", function(ev){ ev.stopPropagation(); toggle(themePanel, themeTab); });
-  navTab.addEventListener("click", function(ev){ ev.stopPropagation(); toggle(navPanel, navTab); });
+  });
+  document.getElementById("themeClose").addEventListener("click", function(ev){
+    ev.stopPropagation();
+    closeThemeDrawer();
+  });
   document.addEventListener("click", function(ev){
     if (ev.target && ev.target.closest &&
-        !ev.target.closest(".iconrow") && !ev.target.closest(".cpanel"))
+        !ev.target.closest(".iconrow") && !ev.target.closest(".cpanel") &&
+        !ev.target.closest("#themePanel"))
       closeControlPanels();
   });
 })();
@@ -1197,17 +1273,6 @@ document.getElementById("jumpBtn").addEventListener("click", function(){
   const v = parseInt(document.getElementById("dayJump").value, 10);
   if(v >= 1 && v <= 365) browseTo(v);
   else toast("Type a day number from 1 to 365.");
-});
-document.getElementById("dateBtn").addEventListener("click", function(){
-  const v = document.getElementById("dateJump").value;
-  if(!v){ toast("Pick a date first."); return; }
-  const parts = v.split("-");
-  const d = new Date(parseInt(parts[0],10), parseInt(parts[1],10) - 1, parseInt(parts[2],10));
-  const start = new Date(d.getFullYear(), 0, 0);
-  const n = Math.floor((d - start) / 86400000);
-  followClock = true;
-  currentSlot = slotForNow();
-  render(Math.min(365, Math.max(1, n)));
 });
 document.getElementById("saveBtn").addEventListener("click", function(){
   let saved = getSaved();
