@@ -160,6 +160,24 @@
     background:var(--paper);border:1px solid var(--soft);border-radius:6px;
     font-family:inherit;font-size:.8rem;padding:5px 9px;cursor:pointer;color:var(--deep);
   }
+  .share-menu{
+    position:fixed;inset:0;background:rgba(2,16,36,.72);
+    display:none;align-items:center;justify-content:center;z-index:50;padding:16px;
+  }
+  .share-menu.open{display:flex;}
+  .share-box{
+    background:var(--card);border-radius:14px;padding:22px;width:100%;max-width:340px;
+    box-shadow:0 14px 40px rgba(0,0,0,.5);
+  }
+  .share-box h2{font-size:1.05rem;color:var(--deep);margin-bottom:6px;font-weight:normal;}
+  .share-box p{font-size:.9rem;color:var(--mid);margin-bottom:14px;line-height:1.45;}
+  .share-box button{
+    display:block;width:100%;font-family:inherit;font-size:1rem;padding:12px;
+    border-radius:10px;border:1px solid var(--mid);cursor:pointer;margin-top:8px;
+  }
+  #shareTextBtn{background:var(--mid);color:#fff;}
+  #sharePicBtn{background:var(--deep);color:var(--ice);}
+  #shareCancelBtn{background:var(--paper);color:var(--deep);}
   .toast{
     position:fixed;left:50%;bottom:22px;transform:translateX(-50%);
     background:var(--deep);color:var(--ice);padding:10px 18px;border-radius:8px;
@@ -217,6 +235,15 @@
   <div id="savedView">
     <h2>Saved Days</h2>
     <div id="savedList"></div>
+  </div>
+</div>
+<div class="share-menu" id="shareMenu">
+  <div class="share-box">
+    <h2>Share Day <span id="shareDayNum"></span></h2>
+    <p>Share the verse, the affirmation and the action for this day.</p>
+    <button id="shareTextBtn" type="button">Share as text</button>
+    <button id="sharePicBtn" type="button">Share as picture</button>
+    <button id="shareCancelBtn" type="button">Cancel</button>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -342,10 +369,28 @@ document.getElementById("saveBtn").addEventListener("click", function(){
   }
   render(currentDay);
 });
-document.getElementById("shareBtn").addEventListener("click", function(){
+function shareTextForDay(){
   const e = DATA[currentDay - 1];
-  const text = "Day " + currentDay + " · " + e.ref + " (KJV)\n" +
-    e.verse + "\n\n" + e.affirmation;
+  return "My Words \u00b7 Day " + currentDay + "\n\n" +
+    "VERSE\n" + e.verse + "\n" + e.ref + " (KJV)\n\n" +
+    "AFFIRMATION\n" + e.affirmation + "\n\n" +
+    "ACTION\n" + e.action;
+}
+function openShareMenu(){
+  document.getElementById("shareDayNum").textContent = currentDay;
+  document.getElementById("shareMenu").classList.add("open");
+}
+function closeShareMenu(){
+  document.getElementById("shareMenu").classList.remove("open");
+}
+document.getElementById("shareBtn").addEventListener("click", openShareMenu);
+document.getElementById("shareCancelBtn").addEventListener("click", closeShareMenu);
+document.getElementById("shareMenu").addEventListener("click", function(ev){
+  if(ev.target === this) closeShareMenu();
+});
+document.getElementById("shareTextBtn").addEventListener("click", function(){
+  closeShareMenu();
+  const text = shareTextForDay();
   if(navigator.share){
     navigator.share({ title: "My Words", text: text }).catch(function(){});
   } else if(navigator.clipboard && navigator.clipboard.writeText){
@@ -355,6 +400,121 @@ document.getElementById("shareBtn").addEventListener("click", function(){
   } else {
     toast("Sharing is not available on this device.");
   }
+});
+function wrapLines(ctx, text, maxWidth){
+  const words = String(text).split(/\s+/);
+  const lines = [];
+  let line = "";
+  words.forEach(function(w){
+    const test = line ? line + " " + w : w;
+    if(!line || ctx.measureText(test).width <= maxWidth){ line = test; }
+    else { lines.push(line); line = w; }
+  });
+  if(line) lines.push(line);
+  return lines;
+}
+function buildCardCanvas(e){
+  const W = 1080;
+  const marginX = 92, topPad = 104, bottomPad = 140;
+  const maxW = W - marginX * 2;
+  const measure = document.createElement("canvas").getContext("2d");
+  let scale = 1, layout = null, H = 1920;
+  for(let i = 0; i < 60; i++){
+    const vs = Math.round(56 * scale), bs = Math.round(42 * scale);
+    const labelH = 32 * scale + 22, refH = 42 * scale + 20, gap = 54 * scale;
+    measure.font = vs + "px Georgia, 'Times New Roman', serif";
+    const verseLines = wrapLines(measure, e.verse, maxW);
+    measure.font = bs + "px Georgia, 'Times New Roman', serif";
+    const affLines = wrapLines(measure, e.affirmation, maxW);
+    const actLines = wrapLines(measure, e.action, maxW);
+    const contentH = labelH + verseLines.length * vs * 1.42 + refH + gap +
+      labelH + affLines.length * bs * 1.5 + gap +
+      labelH + actLines.length * bs * 1.5;
+    layout = { scale: scale, vs: vs, bs: bs, labelH: labelH, refH: refH, gap: gap,
+      verseLines: verseLines, affLines: affLines, actLines: actLines };
+    if(topPad + contentH + bottomPad <= 1920){ H = 1920; break; }
+    if(scale <= 0.5){ H = Math.ceil(topPad + contentH + bottomPad); break; }
+    scale = Math.round((scale - 0.025) * 1000) / 1000;
+  }
+  const canvas = document.createElement("canvas");
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext("2d");
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, "#021024");
+  grad.addColorStop(1, "#052659");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = "rgba(84,131,179,.65)";
+  ctx.lineWidth = 3;
+  ctx.strokeRect(34, 34, W - 68, H - 68);
+  ctx.textBaseline = "top";
+  ctx.textAlign = "left";
+  let y = topPad;
+  const s = layout.scale;
+  function drawLabel(txt){
+    ctx.font = "bold " + Math.round(32 * s) + "px Georgia, 'Times New Roman', serif";
+    ctx.fillStyle = "#7DA0CA";
+    ctx.fillText(txt, marginX, y);
+    y += layout.labelH;
+  }
+  function drawLines(arr, size, lh){
+    ctx.font = size + "px Georgia, 'Times New Roman', serif";
+    ctx.fillStyle = "#FFFFFF";
+    arr.forEach(function(ln){ ctx.fillText(ln, marginX, y); y += size * lh; });
+  }
+  drawLabel("THE VERSE");
+  drawLines(layout.verseLines, layout.vs, 1.42);
+  ctx.font = "italic " + Math.round(38 * s) + "px Georgia, 'Times New Roman', serif";
+  ctx.fillStyle = "#7DA0CA";
+  ctx.fillText(e.ref + " (KJV)", marginX, y + 6);
+  y += layout.refH + layout.gap;
+  drawLabel("THE AFFIRMATION");
+  drawLines(layout.affLines, layout.bs, 1.5);
+  y += layout.gap;
+  drawLabel("THE ACTION");
+  drawLines(layout.actLines, layout.bs, 1.5);
+  ctx.font = Math.round(36 * s) + "px Georgia, 'Times New Roman', serif";
+  ctx.fillStyle = "#C1E8FF";
+  ctx.textAlign = "center";
+  ctx.fillText("My Words", W / 2, H - 96);
+  ctx.textAlign = "left";
+  return canvas;
+}
+function downloadBlob(blob, name){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+  toast("Picture saved. Share it from your downloads.");
+}
+document.getElementById("sharePicBtn").addEventListener("click", function(){
+  closeShareMenu();
+  const e = DATA[currentDay - 1];
+  let canvas;
+  try { canvas = buildCardCanvas(e); }
+  catch(err){ toast("Picture could not be made on this device."); return; }
+  const fileName = "mywords-day-" + currentDay + ".png";
+  canvas.toBlob(function(blob){
+    if(!blob){ toast("Picture could not be made on this device."); return; }
+    let usedShare = false;
+    if(navigator.canShare && window.File && navigator.share){
+      try {
+        const file = new File([blob], fileName, { type: "image/png" });
+        if(navigator.canShare({ files: [file] })){
+          usedShare = true;
+          navigator.share({ files: [file], title: "My Words" }).catch(function(err){
+            if(!err || err.name !== "AbortError") downloadBlob(blob, fileName);
+          });
+        }
+      } catch(err){ usedShare = false; }
+    }
+    if(!usedShare) downloadBlob(blob, fileName);
+  }, "image/png");
 });
 document.getElementById("savedToggle").addEventListener("click", function(){
   const v = document.getElementById("savedView");

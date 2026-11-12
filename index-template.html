@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Words</title>
+<style>
+  :root{
+    --ink:#021024;
+    --deep:#052659;
+    --mid:#5483B3;
+    --soft:#7DA0CA;
+    --ice:#C1E8FF;
+    --paper:#F4F9FF;
+    --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:Georgia,'Times New Roman',serif;
+    background:var(--ink);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:16px 12px 32px;
+  }
+  .frame{width:100%;max-width:560px;}
+  header{
+    text-align:center;
+    color:var(--ice);
+    padding:18px 8px 10px;
+  }
+  header h1{
+    font-size:1.7rem;
+    letter-spacing:.04em;
+    color:#FFFFFF;
+    font-weight:normal;
+  }
+  header .dateline{
+    margin-top:6px;
+    font-size:.95rem;
+    color:var(--soft);
+  }
+  header .theme{
+    margin-top:4px;
+    font-size:.8rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--mid);
+  }
+  nav.bar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    justify-content:center;
+    align-items:center;
+    margin:12px 0 14px;
+  }
+  nav.bar button, .jump button{
+    font-family:inherit;
+    background:var(--deep);
+    color:var(--ice);
+    border:1px solid var(--mid);
+    border-radius:8px;
+    padding:8px 14px;
+    font-size:.9rem;
+    cursor:pointer;
+  }
+  nav.bar button:hover, .jump button:hover{background:var(--mid);color:#fff;}
+  .jump{display:flex;gap:6px;align-items:center;}
+  .jump input{
+    font-family:inherit;
+    width:74px;
+    padding:8px;
+    border-radius:8px;
+    border:1px solid var(--mid);
+    background:var(--paper);
+    color:var(--ink);
+    font-size:.9rem;
+  }
+  .jump input[type="date"]{width:150px;}
+  .card{
+    background:var(--card);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.45);
+  }
+  section.block{padding:20px 22px;}
+  section.block + section.block{border-top:1px solid var(--ice);}
+  .block h2{
+    font-size:.78rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--mid);
+    margin-bottom:10px;
+    font-weight:bold;
+  }
+  .verse-text{
+    font-size:1.22rem;
+    line-height:1.55;
+    color:var(--deep);
+  }
+  .verse-ref{
+    margin-top:10px;
+    font-size:.95rem;
+    color:var(--mid);
+    font-style:italic;
+  }
+  section.affirmation{background:var(--paper);}
+  .affirmation-text{
+    font-size:1.05rem;
+    line-height:1.6;
+  }
+  .action-text{
+    font-size:1.05rem;
+    line-height:1.55;
+    color:var(--deep);
+  }
+  footer.actions{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+  }
+  footer.actions button{
+    flex:1;
+    font-family:inherit;
+    font-size:1rem;
+    padding:13px;
+    border-radius:10px;
+    border:1px solid var(--mid);
+    cursor:pointer;
+  }
+  #shareBtn{background:var(--mid);color:#fff;}
+  #shareBtn:hover{background:var(--deep);}
+  #saveBtn{background:var(--deep);color:var(--ice);}
+  #saveBtn.saved{background:var(--soft);color:var(--ink);}
+  .savedlink{
+    margin-top:14px;
+    text-align:center;
+  }
+  .savedlink button{
+    background:none;border:none;color:var(--soft);
+    font-family:inherit;font-size:.92rem;cursor:pointer;
+    text-decoration:underline;
+  }
+  #savedView{display:none;margin-top:14px;background:var(--card);border-radius:14px;padding:18px 20px;}
+  #savedView h2{font-size:1rem;color:var(--deep);margin-bottom:10px;}
+  #savedView .empty{color:var(--mid);font-size:.95rem;}
+  .saved-item{
+    display:flex;justify-content:space-between;align-items:center;gap:8px;
+    padding:10px 4px;border-top:1px solid var(--ice);
+  }
+  .saved-item .open{
+    background:none;border:none;font-family:inherit;text-align:left;cursor:pointer;
+    color:var(--ink);font-size:.98rem;flex:1;
+  }
+  .saved-item .open:hover{color:var(--mid);}
+  .saved-item .unsave{
+    background:var(--paper);border:1px solid var(--soft);border-radius:6px;
+    font-family:inherit;font-size:.8rem;padding:5px 9px;cursor:pointer;color:var(--deep);
+  }
+  .share-menu{
+    position:fixed;inset:0;background:rgba(2,16,36,.72);
+    display:none;align-items:center;justify-content:center;z-index:50;padding:16px;
+  }
+  .share-menu.open{display:flex;}
+  .share-box{
+    background:var(--card);border-radius:14px;padding:22px;width:100%;max-width:340px;
+    box-shadow:0 14px 40px rgba(0,0,0,.5);
+  }
+  .share-box h2{font-size:1.05rem;color:var(--deep);margin-bottom:6px;font-weight:normal;}
+  .share-box p{font-size:.9rem;color:var(--mid);margin-bottom:14px;line-height:1.45;}
+  .share-box button{
+    display:block;width:100%;font-family:inherit;font-size:1rem;padding:12px;
+    border-radius:10px;border:1px solid var(--mid);cursor:pointer;margin-top:8px;
+  }
+  #shareTextBtn{background:var(--mid);color:#fff;}
+  #sharePicBtn{background:var(--deep);color:var(--ice);}
+  #shareCancelBtn{background:var(--paper);color:var(--deep);}
+  .toast{
+    position:fixed;left:50%;bottom:22px;transform:translateX(-50%);
+    background:var(--deep);color:var(--ice);padding:10px 18px;border-radius:8px;
+    font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .25s;
+  }
+  .toast.show{opacity:1;}
+</style>
+</head>
+<body>
+<div class="frame">
+  <header>
+    <h1>My Words</h1>
+    <div class="dateline" id="dateline"></div>
+    <div class="theme" id="themeLine"></div>
+  </header>
+
+  <nav class="bar">
+    <button id="prevBtn" type="button">Prev Day</button>
+    <button id="todayBtn" type="button">Today</button>
+    <button id="nextBtn" type="button">Next Day</button>
+    <span class="jump">
+      <input id="dayJump" type="number" min="1" max="365" placeholder="Day">
+      <button id="jumpBtn" type="button">Go</button>
+    </span>
+    <span class="jump">
+      <input id="dateJump" type="date">
+      <button id="dateBtn" type="button">Open Date</button>
+    </span>
+  </nav>
+
+  <main class="card">
+    <section class="block verse">
+      <h2>Verse</h2>
+      <p class="verse-text" id="verseText"></p>
+      <p class="verse-ref" id="verseRef"></p>
+    </section>
+    <section class="block affirmation">
+      <h2>Affirmation</h2>
+      <p class="affirmation-text" id="affirmText"></p>
+    </section>
+    <section class="block action">
+      <h2>Action</h2>
+      <p class="action-text" id="actionText"></p>
+    </section>
+  </main>
+
+  <footer class="actions">
+    <button id="shareBtn" type="button">Share</button>
+    <button id="saveBtn" type="button">Save</button>
+  </footer>
+
+  <div class="savedlink">
+    <button id="savedToggle" type="button">View Saved Days</button>
+  </div>
+  <div id="savedView">
+    <h2>Saved Days</h2>
+    <div id="savedList"></div>
+  </div>
+</div>
+<div class="share-menu" id="shareMenu">
+  <div class="share-box">
+    <h2>Share Day <span id="shareDayNum"></span></h2>
+    <p>Share the verse, the affirmation and the action for this day.</p>
+    <button id="shareTextBtn" type="button">Share as text</button>
+    <button id="sharePicBtn" type="button">Share as picture</button>
+    <button id="shareCancelBtn" type="button">Cancel</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DATA = /*__DATA__*/[];
+const SAVE_KEY = "dailyWordFrameSaved";
+let currentDay = todayDayNumber();
+
+function todayDayNumber(){
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const n = Math.floor((now - start) / 86400000);
+  return Math.min(365, Math.max(1, n));
+}
+function dateLabelForDay(day){
+  const names = ["January","February","March","April","May","June","July",
+    "August","September","October","November","December"];
+  const d = new Date(new Date().getFullYear(), 0, day);
+  return names[d.getMonth()] + " " + d.getDate();
+}
+function getSaved(){
+  try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || []; }
+  catch(e){ return []; }
+}
+function setSaved(list){ localStorage.setItem(SAVE_KEY, JSON.stringify(list)); }
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 2200);
+}
+function render(day){
+  currentDay = Math.min(365, Math.max(1, day));
+  const e = DATA[currentDay - 1];
+  if(!e) return;
+  document.getElementById("dateline").textContent =
+    dateLabelForDay(currentDay) + " · Day " + currentDay + " of 365";
+  document.getElementById("themeLine").textContent = e.theme;
+  document.getElementById("verseText").textContent = e.verse;
+  document.getElementById("verseRef").textContent = e.ref + " (KJV)";
+  document.getElementById("affirmText").textContent = e.affirmation;
+  document.getElementById("actionText").textContent = e.action;
+  const saved = getSaved();
+  const btn = document.getElementById("saveBtn");
+  if(saved.includes(currentDay)){
+    btn.textContent = "Saved";
+    btn.classList.add("saved");
+  } else {
+    btn.textContent = "Save";
+    btn.classList.remove("saved");
+  }
+  renderSaved();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+function renderSaved(){
+  const list = document.getElementById("savedList");
+  const saved = getSaved().slice().sort((a,b)=>a-b);
+  list.innerHTML = "";
+  if(saved.length === 0){
+    const p = document.createElement("p");
+    p.className = "empty";
+    p.textContent = "No saved days yet. Tap Save on any day and it will wait for you here.";
+    list.appendChild(p);
+    return;
+  }
+  saved.forEach(function(d){
+    const e = DATA[d - 1];
+    const row = document.createElement("div");
+    row.className = "saved-item";
+    const open = document.createElement("button");
+    open.className = "open";
+    open.type = "button";
+    open.textContent = "Day " + d + ": " + (e ? e.ref : "");
+    open.addEventListener("click", function(){ render(d); });
+    const un = document.createElement("button");
+    un.className = "unsave";
+    un.type = "button";
+    un.textContent = "Unsave";
+    un.addEventListener("click", function(){
+      setSaved(getSaved().filter(function(x){ return x !== d; }));
+      render(currentDay);
+      toast("Day " + d + " removed from saved days.");
+    });
+    row.appendChild(open);
+    row.appendChild(un);
+    list.appendChild(row);
+  });
+}
+document.getElementById("prevBtn").addEventListener("click", function(){
+  render(currentDay === 1 ? 365 : currentDay - 1);
+});
+document.getElementById("nextBtn").addEventListener("click", function(){
+  render(currentDay === 365 ? 1 : currentDay + 1);
+});
+document.getElementById("todayBtn").addEventListener("click", function(){
+  render(todayDayNumber());
+});
+document.getElementById("jumpBtn").addEventListener("click", function(){
+  const v = parseInt(document.getElementById("dayJump").value, 10);
+  if(v >= 1 && v <= 365) render(v);
+  else toast("Type a day number from 1 to 365.");
+});
+document.getElementById("dateBtn").addEventListener("click", function(){
+  const v = document.getElementById("dateJump").value;
+  if(!v){ toast("Pick a date first."); return; }
+  const parts = v.split("-");
+  const d = new Date(parseInt(parts[0],10), parseInt(parts[1],10) - 1, parseInt(parts[2],10));
+  const start = new Date(d.getFullYear(), 0, 0);
+  const n = Math.floor((d - start) / 86400000);
+  render(Math.min(365, Math.max(1, n)));
+});
+document.getElementById("saveBtn").addEventListener("click", function(){
+  let saved = getSaved();
+  if(saved.includes(currentDay)){
+    saved = saved.filter(function(x){ return x !== currentDay; });
+    setSaved(saved);
+    toast("Day " + currentDay + " removed from saved days.");
+  } else {
+    saved.push(currentDay);
+    setSaved(saved);
+    toast("Day " + currentDay + " saved.");
+  }
+  render(currentDay);
+});
+function shareTextForDay(){
+  const e = DATA[currentDay - 1];
+  return "My Words \u00b7 Day " + currentDay + "\n\n" +
+    "VERSE\n" + e.verse + "\n" + e.ref + " (KJV)\n\n" +
+    "AFFIRMATION\n" + e.affirmation + "\n\n" +
+    "ACTION\n" + e.action;
+}
+function openShareMenu(){
+  document.getElementById("shareDayNum").textContent = currentDay;
+  document.getElementById("shareMenu").classList.add("open");
+}
+function closeShareMenu(){
+  document.getElementById("shareMenu").classList.remove("open");
+}
+document.getElementById("shareBtn").addEventListener("click", openShareMenu);
+document.getElementById("shareCancelBtn").addEventListener("click", closeShareMenu);
+document.getElementById("shareMenu").addEventListener("click", function(ev){
+  if(ev.target === this) closeShareMenu();
+});
+document.getElementById("shareTextBtn").addEventListener("click", function(){
+  closeShareMenu();
+  const text = shareTextForDay();
+  if(navigator.share){
+    navigator.share({ title: "My Words", text: text }).catch(function(){});
+  } else if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){
+      toast("Copied. Paste it anywhere to share.");
+    }, function(){ toast("Copy failed on this device."); });
+  } else {
+    toast("Sharing is not available on this device.");
+  }
+});
+function wrapLines(ctx, text, maxWidth){
+  const words = String(text).split(/\s+/);
+  const lines = [];
+  let line = "";
+  words.forEach(function(w){
+    const test = line ? line + " " + w : w;
+    if(!line || ctx.measureText(test).width <= maxWidth){ line = test; }
+    else { lines.push(line); line = w; }
+  });
+  if(line) lines.push(line);
+  return lines;
+}
+function buildCardCanvas(e){
+  const W = 1080;
+  const marginX = 92, topPad = 104, bottomPad = 140;
+  const maxW = W - marginX * 2;
+  const measure = document.createElement("canvas").getContext("2d");
+  let scale = 1, layout = null, H = 1920;
+  for(let i = 0; i < 60; i++){
+    const vs = Math.round(56 * scale), bs = Math.round(42 * scale);
+    const labelH = 32 * scale + 22, refH = 42 * scale + 20, gap = 54 * scale;
+    measure.font = vs + "px Georgia, 'Times New Roman', serif";
+    const verseLines = wrapLines(measure, e.verse, maxW);
+    measure.font = bs + "px Georgia, 'Times New Roman', serif";
+    const affLines = wrapLines(measure, e.affirmation, maxW);
+    const actLines = wrapLines(measure, e.action, maxW);
+    const contentH = labelH + verseLines.length * vs * 1.42 + refH + gap +
+      labelH + affLines.length * bs * 1.5 + gap +
+      labelH + actLines.length * bs * 1.5;
+    layout = { scale: scale, vs: vs, bs: bs, labelH: labelH, refH: refH, gap: gap,
+      verseLines: verseLines, affLines: affLines, actLines: actLines };
+    if(topPad + contentH + bottomPad <= 1920){ H = 1920; break; }
+    if(scale <= 0.5){ H = Math.ceil(topPad + contentH + bottomPad); break; }
+    scale = Math.round((scale - 0.025) * 1000) / 1000;
+  }
+  const canvas = document.createElement("canvas");
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext("2d");
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, "#021024");
+  grad.addColorStop(1, "#052659");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = "rgba(84,131,179,.65)";
+  ctx.lineWidth = 3;
+  ctx.strokeRect(34, 34, W - 68, H - 68);
+  ctx.textBaseline = "top";
+  ctx.textAlign = "left";
+  let y = topPad;
+  const s = layout.scale;
+  function drawLabel(txt){
+    ctx.font = "bold " + Math.round(32 * s) + "px Georgia, 'Times New Roman', serif";
+    ctx.fillStyle = "#7DA0CA";
+    ctx.fillText(txt, marginX, y);
+    y += layout.labelH;
+  }
+  function drawLines(arr, size, lh){
+    ctx.font = size + "px Georgia, 'Times New Roman', serif";
+    ctx.fillStyle = "#FFFFFF";
+    arr.forEach(function(ln){ ctx.fillText(ln, marginX, y); y += size * lh; });
+  }
+  drawLabel("THE VERSE");
+  drawLines(layout.verseLines, layout.vs, 1.42);
+  ctx.font = "italic " + Math.round(38 * s) + "px Georgia, 'Times New Roman', serif";
+  ctx.fillStyle = "#7DA0CA";
+  ctx.fillText(e.ref + " (KJV)", marginX, y + 6);
+  y += layout.refH + layout.gap;
+  drawLabel("THE AFFIRMATION");
+  drawLines(layout.affLines, layout.bs, 1.5);
+  y += layout.gap;
+  drawLabel("THE ACTION");
+  drawLines(layout.actLines, layout.bs, 1.5);
+  ctx.font = Math.round(36 * s) + "px Georgia, 'Times New Roman', serif";
+  ctx.fillStyle = "#C1E8FF";
+  ctx.textAlign = "center";
+  ctx.fillText("My Words", W / 2, H - 96);
+  ctx.textAlign = "left";
+  return canvas;
+}
+function downloadBlob(blob, name){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+  toast("Picture saved. Share it from your downloads.");
+}
+document.getElementById("sharePicBtn").addEventListener("click", function(){
+  closeShareMenu();
+  const e = DATA[currentDay - 1];
+  let canvas;
+  try { canvas = buildCardCanvas(e); }
+  catch(err){ toast("Picture could not be made on this device."); return; }
+  const fileName = "mywords-day-" + currentDay + ".png";
+  canvas.toBlob(function(blob){
+    if(!blob){ toast("Picture could not be made on this device."); return; }
+    let usedShare = false;
+    if(navigator.canShare && window.File && navigator.share){
+      try {
+        const file = new File([blob], fileName, { type: "image/png" });
+        if(navigator.canShare({ files: [file] })){
+          usedShare = true;
+          navigator.share({ files: [file], title: "My Words" }).catch(function(err){
+            if(!err || err.name !== "AbortError") downloadBlob(blob, fileName);
+          });
+        }
+      } catch(err){ usedShare = false; }
+    }
+    if(!usedShare) downloadBlob(blob, fileName);
+  }, "image/png");
+});
+document.getElementById("savedToggle").addEventListener("click", function(){
+  const v = document.getElementById("savedView");
+  const openNow = v.style.display === "block";
+  v.style.display = openNow ? "none" : "block";
+  this.textContent = openNow ? "View Saved Days" : "Hide Saved Days";
+  if(!openNow) renderSaved();
+});
+render(currentDay);
+</script>
+</body>
+</html>
