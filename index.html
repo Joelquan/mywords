@@ -101,34 +101,6 @@
     border-color:var(--btn-border);
     font-weight:bold;
   }
-  .schemebar{
-    display:none;
-    align-items:center;
-    justify-content:center;
-    gap:12px;
-    margin-top:11px;
-  }
-  .schemebar button{
-    font-family:inherit;
-    width:32px;
-    height:32px;
-    border-radius:50%;
-    padding:0;
-    font-size:1.05rem;
-    line-height:1;
-    cursor:pointer;
-    background:linear-gradient(180deg, var(--nav-bg-a), var(--nav-bg-b));
-    color:var(--nav-ink);
-    border:1px solid var(--nav-border);
-    box-shadow:0 3px 10px var(--shadow2), inset 0 1px 0 var(--hl);
-  }
-  .schemebar button:active{transform:translateY(1px);}
-  #schemeName{
-    font-size:.8rem;
-    letter-spacing:.16em;
-    text-transform:uppercase;
-    color:var(--page-label);
-  }
   nav.bar{
     display:flex;
     flex-wrap:wrap;
@@ -394,11 +366,6 @@
     <button type="button" class="tchip" data-set-theme="metal">Metallic</button>
     <button type="button" class="tchip" data-set-theme="papyrus">Papyrus</button>
   </div>
-  <div class="schemebar" id="schemeBar">
-    <button type="button" id="schemePrev" aria-label="Previous scheme">&#8249;</button>
-    <span id="schemeName"></span>
-    <button type="button" id="schemeNext" aria-label="Next scheme">&#8250;</button>
-  </div>
 
 
   <nav class="bar">
@@ -468,7 +435,6 @@ try {
   const t = localStorage.getItem(THEME_KEY);
   if (t && THEME_NAMES.indexOf(t) >= 0) themeName = t;
 } catch (e) {}
-let schemeOverride = null;
 
 function hx(hex, a){
   const n = parseInt(hex.slice(1), 16);
@@ -605,16 +571,8 @@ function metalCss(m){
 
 function schemeCount(){ return themeName === "metal" ? METALS.length : ROT24.length; }
 function schemeIndex(){
-  const total = schemeCount();
-  if (schemeOverride && schemeOverride.theme === themeName) return schemeOverride.idx;
-  return (todayDayNumber() - 1) % total;
+  return (todayDayNumber() - 1) % schemeCount();
 }
-function schemeName(){
-  if (themeName === "metal") return METALS[schemeIndex()].name;
-  if (themeName === "rot24") return ROT24[schemeIndex()][0];
-  return "";
-}
-
 function activeCss(){
   if (themeName === "rot24") return rotCss(ROT24[schemeIndex()]);
   if (themeName === "metal") return metalCss(METALS[schemeIndex()]);
@@ -643,29 +601,12 @@ function applyTheme(){
   const chips = document.querySelectorAll(".tchip");
   for (let i = 0; i < chips.length; i++)
     chips[i].classList.toggle("on", chips[i].getAttribute("data-set-theme") === themeName);
-  const bar = document.getElementById("schemeBar");
-  if (bar){
-    if (themeName === "rot24" || themeName === "metal"){
-      bar.style.display = "flex";
-      document.getElementById("schemeName").textContent =
-        schemeName() + " \u00b7 " + (schemeIndex() + 1) + " of " + schemeCount();
-    } else {
-      bar.style.display = "none";
-    }
-  }
 }
 
 function setTheme(name){
   if (THEME_NAMES.indexOf(name) < 0) return;
   themeName = name;
-  schemeOverride = null;
   try { localStorage.setItem(THEME_KEY, name); } catch (e) {}
-  applyTheme();
-}
-function stepScheme(dir){
-  const total = schemeCount();
-  const idx = (schemeIndex() + dir + total) % total;
-  schemeOverride = { theme: themeName, idx: idx };
   applyTheme();
 }
 (function wireThemeControls(){
@@ -675,10 +616,6 @@ function stepScheme(dir){
       ch.addEventListener("click", function(){ setTheme(ch.getAttribute("data-set-theme")); });
     })(chips[i]);
   }
-  const prev = document.getElementById("schemePrev");
-  const next = document.getElementById("schemeNext");
-  if (prev) prev.addEventListener("click", function(){ stepScheme(-1); });
-  if (next) next.addEventListener("click", function(){ stepScheme(1); });
 })();
 
 /* Card palette for the share picture, following the active theme and scheme. */
