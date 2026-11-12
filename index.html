@@ -44,13 +44,17 @@
   header{
     text-align:center;
     color:var(--head-ink);
-    padding:10px 8px 0;
+    padding:0;
   }
   .brandline{
     font-size:.92rem;
     letter-spacing:.08em;
     color:var(--head-ink);
-    margin-bottom:12px;
+    margin:0;
+    width:100vw;margin-left:calc(50% - 50vw);
+    padding:9px 12px 8px;
+    background:linear-gradient(180deg, var(--bg-b), var(--bg-a));
+    text-align:center;
   }
   .themelinks{
     text-align:center;
@@ -180,10 +184,12 @@
   .scene{
     position:relative;overflow:hidden;
     border:none;border-radius:0;box-shadow:none;
-    margin:18px -8px 0;
+    margin:0;
+    width:100vw;margin-left:calc(50% - 50vw);
+    height:var(--scene-h,150px);
     text-align:left;
   }
-  .scene svg{display:block;width:100%;height:auto;}
+  .scene svg{display:block;width:100%;height:100%;}
   .scene .greet{
     position:absolute;top:0;left:0;right:0;padding:15px 19px 30px;
     color:#FFFFFF;
@@ -437,6 +443,97 @@
      the frame the panels are built on shows at the sides of the day
      card, shaded for the hour. The panels themselves never change.
      The slot color is set on the card by renderSlot. */
+  /* One screen Home with the header joined to the photo (Nov 12, 2026):
+     Home is one fixed composition at viewport heights of 740px and
+     above. The date strip and the scene are one piece at the top, the
+     day card flexes in the middle, Share and Save rest above the
+     bottom nav, and the page never scrolls. A fit stepper shrinks the
+     scene, spacing, and type only when a long day needs the room.
+     Below 740px the page flows and scrolls as it did before. */
+  #view-home{
+    --scene-h:clamp(118px, 20dvh, 168px);
+    display:flex;flex-direction:column;
+    height:calc(100dvh - 124px);
+    min-height:0;
+  }
+  #view-home[hidden]{display:none;}
+  #view-home header{flex:none;}
+  #view-home .card{
+    flex:1 1 auto;min-height:0;
+    display:flex;flex-direction:column;
+    margin-top:10px;
+  }
+  #view-home .slotcaption{flex:none;}
+  #view-home .sealrow{flex:none;}
+  #view-home section.block{
+    display:flex;flex-direction:column;
+    flex:1 1 0;min-height:0;
+  }
+  #view-home .cover{flex:1;justify-content:center;}
+  #view-home .phase-body{overflow:hidden;flex:1;min-height:0;}
+  #view-home footer.actions{flex:none;margin-top:10px;}
+  #view-home footer.actions button{padding:11px;}
+  #view-home[data-fit="1"]{--scene-h:118px;}
+  #view-home[data-fit="1"] .phase-body{padding:18px 22px;}
+  #view-home[data-fit="1"] .verse-text{font-size:1.22rem;line-height:1.5;}
+  #view-home[data-fit="1"] .affirmation-text{font-size:1rem;line-height:1.6;}
+  #view-home[data-fit="1"] .action-text{font-size:.98rem;line-height:1.55;}
+  #view-home[data-fit="1"] .block h2{margin-bottom:10px;}
+  #view-home[data-fit="1"] .verse-ref{margin-top:14px;padding-top:12px;}
+  #view-home[data-fit="2"]{--scene-h:96px;}
+  #view-home[data-fit="2"] .phase-body{padding:14px 20px;}
+  #view-home[data-fit="2"] .verse-text{font-size:1.08rem;line-height:1.45;}
+  #view-home[data-fit="2"] .affirmation-text{font-size:.92rem;line-height:1.55;}
+  #view-home[data-fit="2"] .action-text{font-size:.9rem;line-height:1.5;}
+  #view-home[data-fit="2"] .block h2{margin-bottom:8px;}
+  #view-home[data-fit="2"] .verse-ref{margin-top:10px;padding-top:10px;}
+  #view-home[data-fit="2"] .cover .cover-seal{width:40px;height:40px;}
+  #view-home[data-fit="2"] .greet-line{font-size:1.08rem;}
+  #view-home[data-fit="3"]{--scene-h:78px;}
+  #view-home[data-fit="3"] .phase-body{padding:10px 18px;}
+  #view-home[data-fit="3"] .verse-text{font-size:.98rem;line-height:1.4;}
+  #view-home[data-fit="3"] .affirmation-text{font-size:.85rem;line-height:1.5;}
+  #view-home[data-fit="3"] .action-text{font-size:.84rem;line-height:1.45;}
+  #view-home[data-fit="3"] .block h2{margin-bottom:6px;font-size:.66rem;}
+  #view-home[data-fit="3"] .verse-ref{margin-top:8px;padding-top:8px;}
+  #view-home[data-fit="3"] .cover .cover-seal{width:34px;height:34px;}
+  #view-home[data-fit="3"] .greet-line{font-size:1rem;}
+  #view-home.has-open section.block.verse{flex:1.18 1 0;}
+  #view-home.has-open section.block.affirmation{flex:1.18 1 0;}
+  #view-home.has-open section.block.action{flex:.64 1 0;}
+  #view-home[data-fit="4"]{--scene-h:60px;}
+  #view-home[data-fit="4"] .brandline{padding:6px 12px 5px;font-size:.86rem;}
+  #view-home[data-fit="4"] .slotcaption{padding-top:10px;font-size:.7rem;}
+  #view-home[data-fit="4"] .phase-body{padding:8px 16px;}
+  #view-home[data-fit="4"] .verse-text{font-size:.92rem;line-height:1.38;}
+  #view-home[data-fit="4"] .affirmation-text{font-size:.82rem;line-height:1.45;}
+  #view-home[data-fit="4"] .action-text{font-size:.8rem;line-height:1.42;padding:10px 12px;}
+  #view-home[data-fit="4"] .block h2{margin-bottom:5px;font-size:.66rem;}
+  #view-home[data-fit="4"] .verse-ref{margin-top:6px;padding-top:6px;font-size:.76rem;}
+  #view-home[data-fit="4"] footer.actions button{padding:8px;}
+  #view-home[data-fit="5"]{--scene-h:46px;}
+  #view-home[data-fit="5"] .brandline{padding:5px 12px 4px;font-size:.82rem;}
+  #view-home[data-fit="5"] .slotcaption{padding-top:6px;font-size:.64rem;}
+  #view-home[data-fit="5"] .phase-body{padding:6px 14px;}
+  #view-home[data-fit="5"] .verse-text{font-size:.86rem;line-height:1.34;}
+  #view-home[data-fit="5"] .affirmation-text{font-size:.77rem;line-height:1.4;}
+  #view-home[data-fit="5"] .action-text{font-size:.76rem;line-height:1.4;padding:8px 10px;}
+  #view-home[data-fit="5"] .block h2{margin-bottom:4px;font-size:.62rem;}
+  #view-home[data-fit="5"] .verse-ref{margin-top:4px;padding-top:4px;font-size:.7rem;}
+  #view-home[data-fit="5"] footer.actions{margin-top:6px;}
+  #view-home[data-fit="5"] footer.actions button{padding:7px;}
+  #view-home[data-fit="5"] .card{margin-top:6px;}
+  #view-home[data-fit="4"] .cover{gap:7px;padding:12px 20px;}
+  #view-home[data-fit="4"] .cover .cover-seal{width:38px;height:38px;}
+  #view-home[data-fit="5"] .cover{gap:5px;padding:8px 18px;}
+  #view-home[data-fit="5"] .cover .cover-seal{width:30px;height:30px;}
+  #view-home[data-fit="5"] .cover .cover-label{font-size:.68rem;}
+  #view-home[data-fit="5"] .cover .cover-hint{font-size:.74rem;}
+  @media (max-height:739px){
+    #view-home{height:auto;display:block;}
+    #view-home section.block{display:block;}
+    #view-home .phase-body{overflow:visible;}
+  }
   .card{
     --slot-edge:#DFA53A;
     box-shadow:
@@ -927,7 +1024,9 @@ function sceneSVG(time, season){
   const SKY_OFF = { 4: [0, .35, .7, 1], 5: [0, .3, .55, .8, 1] };
   let stops = "";
   P.sky.forEach(function(c, i){ stops += '<stop offset="' + SKY_OFF[P.sky.length][i] + '" stop-color="' + c + '"/>'; });
-  let s = '<svg viewBox="0 0 600 340" preserveAspectRatio="xMidYMid slice" role="img" aria-label="' + time + " in " + season + '">';
+  const par = time === "morning" ? "xMidYMax slice" :
+    (time === "afternoon" ? "xMidYMin slice" : "xMidYMid slice");
+  let s = '<svg viewBox="0 0 600 340" preserveAspectRatio="' + par + '" role="img" aria-label="' + time + " in " + season + '">';
   s += '<defs>' +
     '<linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">' + stops + '</linearGradient>' +
     '<radialGradient id="haloG"><stop offset="0" stop-color="rgba(255,226,160,.85)"/><stop offset=".55" stop-color="rgba(255,205,120,.32)"/><stop offset="1" stop-color="rgba(255,205,120,0)"/></radialGradient>' +
@@ -1022,11 +1121,20 @@ function todayDayNumber(){
   const n = Math.floor((now - start) / 86400000);
   return Math.min(365, Math.max(1, n));
 }
+function ordinalSuffix(n){
+  if (n % 100 >= 11 && n % 100 <= 13) return "th";
+  switch (n % 10){
+    case 1: return "st";
+    case 2: return "nd";
+    case 3: return "rd";
+    default: return "th";
+  }
+}
 function dateLabelForDay(day){
   const names = ["January","February","March","April","May","June","July",
     "August","September","October","November","December"];
   const d = new Date(new Date().getFullYear(), 0, day);
-  return names[d.getMonth()] + " " + d.getDate();
+  return names[d.getMonth()] + " " + d.getDate() + ordinalSuffix(d.getDate());
 }
 function getSaved(){
   try {
@@ -1046,17 +1154,48 @@ function toast(msg){
   t.classList.add("show");
   setTimeout(()=>t.classList.remove("show"), 2200);
 }
+function fitHome(){
+  const home = document.getElementById("view-home");
+  if (!home || home.hidden) return;
+  home.removeAttribute("data-fit");
+  let step = 0;
+  const over = function(){
+    for (let i = 0; i < 3; i++){
+      const b = document.getElementById("phase" + i);
+      if (b.classList.contains("open") &&
+          b.scrollHeight > b.clientHeight + 1) return true;
+      const c = document.getElementById("cover" + i);
+      if (c.style.display !== "none"){
+        if (c.scrollHeight > c.clientHeight + 1) return true;
+        const cr = c.getBoundingClientRect();
+        for (const ch of c.children){
+          const r = ch.getBoundingClientRect();
+          if (r.top < cr.top - 1 || r.bottom > cr.bottom + 1) return true;
+        }
+        const sr = c.parentElement.getBoundingClientRect();
+        if (cr.bottom > sr.bottom + 1 || cr.top < sr.top - 1) return true;
+        const kr = document.querySelector("#view-home .card").getBoundingClientRect();
+        if (cr.bottom > kr.bottom + 1) return true;
+      }
+    }
+    return false;
+  };
+  while (step < 5 && over()){
+    step++;
+    home.setAttribute("data-fit", String(step));
+  }
+}
 function render(day){
   currentDay = Math.min(365, Math.max(1, day));
   applyTheme();
   const e = DATA[currentDay - 1];
   if(!e) return;
   document.getElementById("dateline").textContent =
-    "My Words · Day " + currentDay + " of 365 · " +
-    dateLabelForDay(currentDay) + ", " + new Date().getFullYear();
+    "My Words · " + dateLabelForDay(currentDay);
   renderSlot();
   renderSaved();
   window.scrollTo({top:0, behavior:"smooth"});
+  fitHome();
 }
 function renderSlot(){
   const e = DATA[currentDay - 1];
@@ -1093,6 +1232,7 @@ let revealStep = 0;
 const PHASE_NAMES = ["The Verse", "The Affirmation", "The Action"];
 function resetVeil(){
   revealStep = 0;
+  document.getElementById("view-home").classList.remove("has-open");
   for (let i = 0; i < 3; i++){
     const c = document.getElementById("cover" + i);
     c.style.display = "";
@@ -1115,10 +1255,13 @@ function revealPhase(i){
   c.style.display = "none";
   c.setAttribute("aria-expanded", "true");
   document.getElementById("phase" + i).classList.add("open");
+  document.getElementById("view-home").classList.add("has-open");
   revealStep++;
+  fitHome();
   if (revealStep < 3)
     document.getElementById("cover" + revealStep).classList.remove("waiting");
 }
+window.addEventListener("resize", fitHome);
 (function wireTimeControls(){
   for (let i = 0; i < 3; i++){
     (function(idx){
