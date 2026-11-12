@@ -52,68 +52,27 @@
     color:var(--head-ink);
     margin-bottom:12px;
   }
-  .scrim{
-    position:fixed;inset:0;z-index:55;
-    background:rgba(2,8,18,.52);
-    opacity:0;transition:opacity .18s ease;
+  .themelinks{
+    text-align:center;
+    margin:10px 0 0;
+    font-size:.92rem;
+    letter-spacing:.04em;
+    color:var(--label);
   }
-  .scrim[hidden]{display:none;}
-  .scrim.open{opacity:1;}
-  .drawer{
-    position:fixed;left:0;right:0;bottom:0;z-index:56;
-    max-width:580px;margin:0 auto;
-    background:linear-gradient(168deg, var(--card-a), var(--card-b));
-    border:1px solid var(--card-border);border-bottom:none;
-    border-radius:18px 18px 0 0;
-    box-shadow:0 -18px 44px var(--shadow2), inset 0 1px 0 var(--hl);
-    padding:12px 16px calc(16px + env(safe-area-inset-bottom));
-    transform:translateY(106%);transition:transform .18s ease;
-  }
-  .drawer[hidden]{display:none;}
-  .drawer.open{transform:translateY(0);}
-  .drawer-head{
-    display:flex;align-items:center;justify-content:space-between;
-    margin:2px 2px 10px;
-  }
-  .drawer-title{
-    font-size:.76rem;letter-spacing:.3em;text-transform:uppercase;
-    color:var(--label);font-weight:bold;
-  }
-  .drawer-close{
-    font-family:inherit;cursor:pointer;
-    width:32px;height:32px;border-radius:999px;
-    display:inline-flex;align-items:center;justify-content:center;
-    font-size:1.15rem;line-height:1;
-    background:linear-gradient(180deg, var(--nav-bg-a), var(--nav-bg-b));
-    color:var(--nav-ink);border:1px solid var(--nav-border);
-    box-shadow:0 3px 10px var(--shadow2), inset 0 1px 0 var(--hl);
-  }
-  .drawer-close:active{transform:translateY(1px);}
-  .themelist{display:flex;flex-direction:column;gap:8px;}
-  .tchip{
-    font-family:inherit;
-    display:flex;align-items:center;justify-content:space-between;
-    width:100%;text-align:left;
-    font-size:1rem;
-    letter-spacing:.05em;
-    padding:13px 16px;
-    border-radius:12px;
+  .themelinks .tlink{
+    color:var(--label);
+    text-decoration:none;
     cursor:pointer;
-    background:linear-gradient(180deg, var(--nav-bg-a), var(--nav-bg-b));
-    color:var(--nav-ink);
-    border:1px solid var(--nav-border);
-    box-shadow:0 3px 10px var(--shadow2), inset 0 1px 0 var(--hl);
-    transition:background .2s, transform .12s;
+    padding:2px 1px;
   }
-  .tchip:active{transform:translateY(1px);}
-  .tchip .mark{font-size:.95rem;opacity:0;}
-  .tchip.on{
-    background:linear-gradient(180deg, var(--btn-a), var(--btn-b));
-    color:var(--btn-ink);
-    border-color:var(--btn-border);
+  .themelinks .tlink:hover{text-decoration:underline;}
+  .themelinks .tlink.on{
+    color:var(--head-ink);
     font-weight:bold;
+    text-decoration:underline;
+    text-underline-offset:3px;
   }
-  .tchip.on .mark{opacity:1;}
+  .themelinks .tsep{margin:0 7px;opacity:.7;}
   nav.bar{
     display:flex;
     flex-wrap:wrap;
@@ -238,29 +197,75 @@
   .greet-slot{
     margin-top:4px;font-size:.7rem;letter-spacing:.28em;text-transform:uppercase;opacity:.88;
   }
-  .iconrow{display:flex;gap:8px;justify-content:center;margin:14px 0 0;}
-  .itab{
-    font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
-    width:40px;height:34px;border-radius:999px;
+  body{padding-bottom:104px;}
+  .view[hidden]{display:none;}
+  .bottomnav{
+    position:fixed;left:0;right:0;bottom:0;z-index:40;
+    max-width:580px;margin:0 auto;
+    display:flex;
     background:linear-gradient(180deg, var(--nav-bg-a), var(--nav-bg-b));
-    color:var(--nav-ink);border:1px solid var(--nav-border);
+    border-top:1px solid var(--nav-border);
+    box-shadow:0 -8px 26px var(--shadow2);
+    padding:6px 6px calc(6px + env(safe-area-inset-bottom));
+  }
+  .navitem{
+    flex:1;background:none;border:none;cursor:pointer;font-family:inherit;
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    padding:7px 2px 5px;color:var(--label);
+    font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+  }
+  .navitem svg{width:22px;height:22px;display:block;}
+  .navitem .dot{width:5px;height:5px;border-radius:999px;background:currentColor;opacity:0;}
+  .navitem.on{color:var(--head-ink);font-weight:bold;}
+  .navitem.on .dot{opacity:1;}
+  .viewhead{
+    text-align:center;color:var(--head-ink);
+    font-size:1.02rem;letter-spacing:.3em;text-transform:uppercase;
+    margin:20px 0 2px;font-weight:bold;
+  }
+  .biblebar{
+    display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;
+    margin:14px 0 4px;
+  }
+  .biblebar select, .biblebar button{
+    font-family:inherit;font-size:.92rem;cursor:pointer;
+    background:linear-gradient(180deg, var(--nav-bg-a), var(--nav-bg-b));
+    color:var(--nav-ink);border:1px solid var(--nav-border);border-radius:10px;
+    padding:9px 12px;
     box-shadow:0 3px 10px var(--shadow2), inset 0 1px 0 var(--hl);
-    transition:background .2s, transform .12s;
   }
-  .itab svg{width:19px;height:19px;display:block;}
-  .itab:active{transform:translateY(1px);}
-  .itab[aria-expanded="true"]{
-    background:linear-gradient(180deg, var(--btn-a), var(--btn-b));
-    color:var(--btn-ink);border-color:var(--btn-border);
+  .biblename{
+    text-align:center;color:var(--head-ink);
+    font-size:1.28rem;margin:14px 0 2px;letter-spacing:.04em;
   }
-  .cpanel{
-    margin:10px auto 0;max-width:520px;padding:12px 12px 13px;
-    background:linear-gradient(168deg, var(--card-a), var(--card-b));
-    border:1px solid var(--card-border);border-radius:14px;
-    box-shadow:0 14px 34px var(--shadow2), inset 0 1px 0 var(--hl);
+  .biblebody{
+    background:
+      var(--tex-card),
+      linear-gradient(168deg, var(--card-a), var(--card-b));
+    border:1px solid var(--card-border);border-radius:18px;
+    box-shadow:0 20px 44px var(--shadow2), inset 0 1px 0 var(--hl);
+    padding:22px 24px;margin-top:12px;
   }
-  .cpanel[hidden]{display:none;}
-  .cpanel nav.bar{margin:0;}
+  .biblebody p.bv{font-size:1.08rem;line-height:1.75;color:var(--aff-ink);margin:0 0 10px;}
+  .biblebody .bvn{
+    font-size:.72rem;color:var(--label);vertical-align:super;
+    margin-right:6px;letter-spacing:.05em;
+  }
+  .biblebody p.bv.hl{background:var(--ghost);border-radius:8px;box-shadow:0 0 0 7px var(--ghost);}
+  .biblebody .bibleloading{color:var(--label);font-size:.98rem;line-height:1.6;text-align:center;}
+  .settingsbox{
+    background:
+      var(--tex-card),
+      linear-gradient(168deg, var(--card-a), var(--card-b));
+    border:1px solid var(--card-border);border-radius:18px;
+    box-shadow:0 20px 44px var(--shadow2), inset 0 1px 0 var(--hl);
+    padding:22px 24px;margin-top:14px;
+  }
+  .settingsbox .themelinks{margin-top:0;}
+  .settingslabel{
+    text-align:center;font-size:.74rem;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--label);font-weight:bold;margin:22px 0 2px;
+  }
   .slotcaption{
     padding:16px 20px 0;text-align:center;
     font-size:.76rem;letter-spacing:.3em;text-transform:uppercase;color:var(--label);
@@ -368,18 +373,9 @@
     border:1px solid var(--btn-border);
     font-weight:bold;
   }
-  .savedlink{
-    margin-top:16px;
-    text-align:center;
-  }
-  .savedlink button{
-    background:none;border:none;color:var(--label);
-    font-family:inherit;font-size:.92rem;cursor:pointer;
-    text-decoration:underline;
-  }
-  .savedlink button:hover{color:var(--head-ink);}
+
   #savedView{
-    display:none;margin-top:16px;
+    display:block;margin-top:14px;
     background:
       var(--tex-card),
       linear-gradient(168deg, var(--card-a), var(--card-b));
@@ -441,6 +437,7 @@
 </head>
 <body>
 <div class="frame">
+  <div class="view" id="view-home">
   <header>
     <div class="brandline" id="dateline"></div>
     <div class="scene" id="sceneBox" data-time="morning">
@@ -451,37 +448,6 @@
       </div>
     </div>
   </header>
-
-  <div class="iconrow" role="group" aria-label="Controls">
-    <button type="button" class="itab" id="themeTab" aria-expanded="false" aria-controls="themePanel" aria-label="Theme" title="Theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5c0 0-6 6.6-6 10.5a6 6 0 0 0 12 0C18 10.1 12 3.5 12 3.5z"/><path d="M9.2 14.2a2.9 2.9 0 0 0 2.4 3.4"/></svg></button>
-    <button type="button" class="itab" id="navTab" aria-expanded="false" aria-controls="navPanel" aria-label="Day navigation" title="Day navigation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7.5h12.5"/><path d="M13 3.8l3.7 3.7-3.7 3.7"/><path d="M20 16.5H7.5"/><path d="M11 12.8l-3.7 3.7 3.7 3.7"/></svg></button>
-  </div>
-
-  <div class="scrim" id="themeScrim" hidden></div>
-  <div class="drawer" id="themePanel" hidden role="dialog" aria-label="Theme">
-    <div class="drawer-head">
-      <span class="drawer-title">Theme</span>
-      <button type="button" class="drawer-close" id="themeClose" aria-label="Close themes">&times;</button>
-    </div>
-    <div class="themelist" role="group" aria-label="Theme">
-      <button type="button" class="tchip" data-set-theme="river"><span class="tname">Default</span><span class="mark" aria-hidden="true">&#10003;</span></button>
-      <button type="button" class="tchip" data-set-theme="rot24"><span class="tname">Color</span><span class="mark" aria-hidden="true">&#10003;</span></button>
-      <button type="button" class="tchip" data-set-theme="metal"><span class="tname">Metal</span><span class="mark" aria-hidden="true">&#10003;</span></button>
-      <button type="button" class="tchip" data-set-theme="papyrus"><span class="tname">Papyrus</span><span class="mark" aria-hidden="true">&#10003;</span></button>
-    </div>
-  </div>
-
-  <div class="cpanel" id="navPanel" hidden>
-    <nav class="bar">
-      <button id="prevBtn" type="button">Prev Day</button>
-      <button id="todayBtn" type="button">Today</button>
-      <button id="nextBtn" type="button">Next Day</button>
-      <span class="jump">
-        <input id="dayJump" type="number" min="1" max="365" placeholder="Day">
-        <button id="jumpBtn" type="button">Go</button>
-      </span>
-    </nav>
-  </div>
 
   <main class="card">
     <div class="slotcaption" id="slotCaption"></div>
@@ -526,15 +492,52 @@
     <button id="shareBtn" type="button">Share</button>
     <button id="saveBtn" type="button">Save</button>
   </footer>
-
-  <div class="savedlink">
-    <button id="savedToggle" type="button">View Saved Days</button>
   </div>
+
+  <div class="view" id="view-bible" hidden>
+    <div class="viewhead">Bible</div>
+    <div class="biblebar">
+      <select id="bookSel" aria-label="Book"></select>
+      <select id="chapSel" aria-label="Chapter"></select>
+      <button id="todayVerseBtn" type="button">Today's verse</button>
+    </div>
+    <div class="biblename" id="bibleName"></div>
+    <div class="biblebody" id="bibleBody"><p class="bibleloading">The Bible opens here. Choose a book and a chapter, or tap Today's verse.</p></div>
+  </div>
+
+  <div class="view" id="view-saved" hidden>
   <div id="savedView">
     <h2>Saved Days</h2>
     <div id="savedList"></div>
   </div>
+  </div>
+
+  <div class="view" id="view-settings" hidden>
+    <div class="viewhead">Settings</div>
+    <div class="settingsbox">
+  <div class="themelinks" role="group" aria-label="Theme">
+    <span>Theme:</span>
+    <a href="#" class="tlink" data-set-theme="river">Default</a><span class="tsep" aria-hidden="true">&middot;</span><a href="#" class="tlink" data-set-theme="rot24">Color</a><span class="tsep" aria-hidden="true">&middot;</span><a href="#" class="tlink" data-set-theme="metal">Metal</a><span class="tsep" aria-hidden="true">&middot;</span><a href="#" class="tlink" data-set-theme="papyrus">Papyrus</a>
+  </div>
+      <div class="settingslabel">Day</div>
+    <nav class="bar">
+      <button id="prevBtn" type="button">Prev Day</button>
+      <button id="todayBtn" type="button">Today</button>
+      <button id="nextBtn" type="button">Next Day</button>
+      <span class="jump">
+        <input id="dayJump" type="number" min="1" max="365" placeholder="Day">
+        <button id="jumpBtn" type="button">Go</button>
+      </span>
+    </nav>
+    </div>
+  </div>
 </div>
+<nav class="bottomnav" aria-label="Main">
+  <button type="button" class="navitem on" data-view="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11.5 12 4l8 7.5"/><path d="M6.5 9.8V20h11V9.8"/><path d="M10 20v-5h4v5"/></svg><span>Home</span><span class="dot" aria-hidden="true"></span></button>
+  <button type="button" class="navitem" data-view="bible"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.2C10 4.7 7.6 4.2 5 4.2v13.6c2.6 0 5 .5 7 2 2-1.5 4.4-2 7-2V4.2c-2.6 0-5 .5-7 2z"/><path d="M12 6.2v13.6"/></svg><span>Bible</span><span class="dot" aria-hidden="true"></span></button>
+  <button type="button" class="navitem" data-view="saved"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.2h10V20l-5-3.9L7 20z"/></svg><span>Saved</span><span class="dot" aria-hidden="true"></span></button>
+  <button type="button" class="navitem" data-view="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M12 3.6v2.5M12 17.9v2.5M3.6 12h2.5M17.9 12h2.5M6.1 6.1l1.7 1.7M16.2 16.2l1.7 1.7M17.9 6.1l-1.7 1.7M7.8 16.2l-1.7 1.7"/></svg><span>Settings</span><span class="dot" aria-hidden="true"></span></button>
+</nav>
 <div class="share-menu" id="shareMenu">
   <div class="share-box">
     <h2>Share Day <span id="shareDayNum"></span></h2>
@@ -721,7 +724,7 @@ function applyTheme(){
     if (themeName === "metal") card.style.backgroundImage = metalGradient(METALS[schemeIndex()].stops);
     else card.style.backgroundImage = "";
   }
-  const chips = document.querySelectorAll(".tchip");
+  const chips = document.querySelectorAll(".tlink");
   for (let i = 0; i < chips.length; i++)
     chips[i].classList.toggle("on", chips[i].getAttribute("data-set-theme") === themeName);
 }
@@ -733,10 +736,10 @@ function setTheme(name){
   applyTheme();
 }
 (function wireThemeControls(){
-  const chips = document.querySelectorAll(".tchip");
+  const chips = document.querySelectorAll(".tlink");
   for (let i = 0; i < chips.length; i++){
     (function(ch){
-      ch.addEventListener("click", function(){ setTheme(ch.getAttribute("data-set-theme")); closeThemeDrawer(); });
+      ch.addEventListener("click", function(ev){ ev.preventDefault(); setTheme(ch.getAttribute("data-set-theme")); });
     })(chips[i]);
   }
 })();
@@ -1141,6 +1144,7 @@ function renderSaved(){
       followClock = false;
       currentSlot = sl;
       render(d);
+      showView("home");
     });
     const un = document.createElement("button");
     un.className = "unsave";
@@ -1157,76 +1161,128 @@ function renderSaved(){
     list.appendChild(row);
   });
 }
-/* The theme drawer: it slides up from the bottom over a scrim. Picking
-   a name applies that theme and closes the drawer; the close button,
-   the scrim, or a tap anywhere outside closes it with no change. */
-let drawerHideTimer = null;
-function openThemeDrawer(){
-  const d = document.getElementById("themePanel");
-  const scrim = document.getElementById("themeScrim");
-  if (drawerHideTimer){ clearTimeout(drawerHideTimer); drawerHideTimer = null; }
-  d.hidden = false;
-  scrim.hidden = false;
-  void d.offsetWidth;
-  d.classList.add("open");
-  scrim.classList.add("open");
-  document.getElementById("themeTab").setAttribute("aria-expanded", "true");
+/* The four views and the bottom navigation. Only one view stands at
+   a time, the app opens on Home, and the nav remembers nothing. */
+let currentView = "home";
+function showView(name){
+  currentView = name;
+  const views = ["home", "bible", "saved", "settings"];
+  for (let i = 0; i < views.length; i++)
+    document.getElementById("view-" + views[i]).hidden = views[i] !== name;
+  const items = document.querySelectorAll(".navitem");
+  for (let i = 0; i < items.length; i++)
+    items[i].classList.toggle("on", items[i].getAttribute("data-view") === name);
+  if (name === "bible") ensureBible();
+  if (name === "saved") renderSaved();
+  window.scrollTo(0, 0);
 }
-function closeThemeDrawer(){
-  const d = document.getElementById("themePanel");
-  const scrim = document.getElementById("themeScrim");
-  document.getElementById("themeTab").setAttribute("aria-expanded", "false");
-  if (d.hidden){
-    scrim.hidden = true;
-    scrim.classList.remove("open");
-    return;
+(function wireBottomNav(){
+  const items = document.querySelectorAll(".navitem");
+  for (let i = 0; i < items.length; i++){
+    (function(it){
+      it.addEventListener("click", function(){ showView(it.getAttribute("data-view")); });
+    })(items[i]);
   }
-  d.classList.remove("open");
-  scrim.classList.remove("open");
-  if (drawerHideTimer) clearTimeout(drawerHideTimer);
-  drawerHideTimer = setTimeout(function(){
-    d.hidden = true;
-    scrim.hidden = true;
-    drawerHideTimer = null;
-  }, 130);
+})();
+
+/* The Bible tab: the whole KJV in one file, fetched only when the tab
+   is first opened, so Home stays fast. Reading only. */
+let BIBLE = null, bibleLoading = false, bibleBook = 0, bibleChap = 1;
+function ensureBible(){
+  if (BIBLE || bibleLoading) return;
+  bibleLoading = true;
+  fetch("bible.json").then(function(r){ return r.json(); }).then(function(d){
+    BIBLE = d;
+    buildBiblePickers();
+    renderBibleChapter();
+  }).catch(function(){
+    bibleLoading = false;
+    document.getElementById("bibleBody").innerHTML =
+      "<p class=\"bibleloading\">The Bible could not be loaded. Check your connection and open the tab again.</p>";
+  });
 }
-function closeControlPanels(){
-  document.getElementById("navPanel").hidden = true;
-  document.getElementById("navTab").setAttribute("aria-expanded", "false");
-  closeThemeDrawer();
+function buildBiblePickers(){
+  const bs = document.getElementById("bookSel");
+  bs.innerHTML = "";
+  BIBLE.books.forEach(function(b, i){
+    const o = document.createElement("option");
+    o.value = i;
+    o.textContent = b.name;
+    bs.appendChild(o);
+  });
+  bs.value = bibleBook;
+  buildChapterPicker();
 }
-(function wireControlPanels(){
-  const themeTab = document.getElementById("themeTab");
-  const navTab = document.getElementById("navTab");
-  const navPanel = document.getElementById("navPanel");
-  themeTab.addEventListener("click", function(ev){
-    ev.stopPropagation();
-    const d = document.getElementById("themePanel");
-    if (d.hidden || !d.classList.contains("open")){
-      closeControlPanels();
-      openThemeDrawer();
-    } else {
-      closeThemeDrawer();
+function buildChapterPicker(){
+  const cs = document.getElementById("chapSel");
+  const n = BIBLE.books[bibleBook].chapters.length;
+  cs.innerHTML = "";
+  for (let c = 1; c <= n; c++){
+    const o = document.createElement("option");
+    o.value = c;
+    o.textContent = "Chapter " + c;
+    cs.appendChild(o);
+  }
+  if (bibleChap > n) bibleChap = n;
+  cs.value = bibleChap;
+}
+function renderBibleChapter(highlightVerse){
+  if (!BIBLE) return;
+  const book = BIBLE.books[bibleBook];
+  document.getElementById("bibleName").textContent = book.name + " " + bibleChap;
+  document.getElementById("bookSel").value = bibleBook;
+  document.getElementById("chapSel").value = bibleChap;
+  const body = document.getElementById("bibleBody");
+  body.innerHTML = "";
+  book.chapters[bibleChap - 1].forEach(function(text, i){
+    const p = document.createElement("p");
+    p.className = "bv" + (highlightVerse === i + 1 ? " hl" : "");
+    p.id = "bv" + (i + 1);
+    const num = document.createElement("span");
+    num.className = "bvn";
+    num.textContent = i + 1;
+    p.appendChild(num);
+    p.appendChild(document.createTextNode(text));
+    body.appendChild(p);
+  });
+  if (highlightVerse){
+    const el = document.getElementById("bv" + highlightVerse);
+    if (el) setTimeout(function(){ el.scrollIntoView({ block: "center" }); }, 60);
+  }
+}
+(function wireBible(){
+  document.getElementById("bookSel").addEventListener("change", function(){
+    bibleBook = parseInt(this.value, 10);
+    bibleChap = 1;
+    buildChapterPicker();
+    renderBibleChapter();
+  });
+  document.getElementById("chapSel").addEventListener("change", function(){
+    bibleChap = parseInt(this.value, 10);
+    renderBibleChapter();
+  });
+  document.getElementById("todayVerseBtn").addEventListener("click", function(){
+    const ref = DATA[currentDay - 1][currentSlot].ref;
+    const m = /^(.+) (\d+):(\d+)$/.exec(ref);
+    if (!m) return;
+    const jump = function(){
+      for (let i = 0; i < BIBLE.books.length; i++){
+        if (BIBLE.books[i].name === m[1]){
+          bibleBook = i;
+          bibleChap = parseInt(m[2], 10);
+          buildChapterPicker();
+          renderBibleChapter(parseInt(m[3], 10));
+          return;
+        }
+      }
+    };
+    if (BIBLE) jump();
+    else {
+      ensureBible();
+      const wait = setInterval(function(){
+        if (BIBLE){ clearInterval(wait); jump(); }
+      }, 120);
     }
-  });
-  navTab.addEventListener("click", function(ev){
-    ev.stopPropagation();
-    const willOpen = navPanel.hidden;
-    closeControlPanels();
-    if (willOpen){
-      navPanel.hidden = false;
-      navTab.setAttribute("aria-expanded", "true");
-    }
-  });
-  document.getElementById("themeClose").addEventListener("click", function(ev){
-    ev.stopPropagation();
-    closeThemeDrawer();
-  });
-  document.addEventListener("click", function(ev){
-    if (ev.target && ev.target.closest &&
-        !ev.target.closest(".iconrow") && !ev.target.closest(".cpanel") &&
-        !ev.target.closest("#themePanel"))
-      closeControlPanels();
   });
 })();
 /* The clock watcher: the time of day follows the visitor's clock on its
@@ -1258,7 +1314,7 @@ function browseTo(day){
   followClock = true;
   currentSlot = slotForNow();
   render(day);
-  closeControlPanels();
+  showView("home");
 }
 document.getElementById("prevBtn").addEventListener("click", function(){
   browseTo(currentDay === 1 ? 365 : currentDay - 1);
@@ -1515,13 +1571,6 @@ document.getElementById("sharePicBtn").addEventListener("click", function(){
     }
     if(!usedShare) downloadBlob(blob, fileName);
   }, "image/png");
-});
-document.getElementById("savedToggle").addEventListener("click", function(){
-  const v = document.getElementById("savedView");
-  const openNow = v.style.display === "block";
-  v.style.display = openNow ? "none" : "block";
-  this.textContent = openNow ? "View Saved Days" : "Hide Saved Days";
-  if(!openNow) renderSaved();
 });
 render(currentDay);
 </script>
