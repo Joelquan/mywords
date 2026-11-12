@@ -806,111 +806,179 @@ function seasonForDay(day){
   if (m >= 8 && m <= 10) return "autumn";
   return "winter";
 }
-const SCENE_SKY = {
-  morning: ["#79A9D6", "#CFE3EF", "#F8DCAE", "#F9BE78"],
-  afternoon: ["#3E8FD2", "#7FBEEA", "#CDEFFB", "#EAF9FF"],
-  evening: ["#081A36", "#0E2C58", "#274B7A", "#8A4A3A"]
-};
-const SCENE_WINTER_SKY = {
-  morning: ["#A8BECB", "#DCE8EC", "#F2E4C4", "#EFC9A0"],
-  afternoon: ["#7FA8C4", "#B9D2E2", "#E2EEF4", "#F0F6F9"],
-  evening: ["#0A1B33", "#14304F", "#33506E", "#6E5A52"]
-};
-const SCENE_LAND = {
-  spring: { far: "#9DBE6E", mid: "#67A657", near: "#35693F", tree: "#274E30" },
-  summer: { far: "#6FA862", mid: "#3F7D44", near: "#245434", tree: "#1C4228" },
-  autumn: { far: "#C08A4A", mid: "#A05E2C", near: "#63331A", tree: "#47240F" },
-  winter: { far: "#B9CBD8", mid: "#8FA9BC", near: "#5E7C90", tree: "#33505F" }
-};
-const SCENE_WATER = { morning: "#EFC287", afternoon: "#9FD0E8", evening: "#1D4066" };
-const SCENE_STARS = [[36,24,1.6,.9],[86,54,1.1,.6],[140,20,1.3,.8],[196,44,1,.5],
-  [238,16,1.5,.85],[300,34,1.1,.55],[352,20,1.4,.8],[404,48,1,.5],[448,18,1.2,.7],
-  [520,88,1.2,.6],[556,30,1.5,.85],[120,84,1,.45],[60,96,1.1,.5],[330,66,1,.45],
-  [560,120,1,.4],[24,130,1,.35]];
-function pineTree(x, y, s, c){
-  return '<g fill="' + c + '">' +
-    '<polygon points="' + (x - 16 * s) + ',' + (y - 12 * s) + ' ' + x + ',' + (y - 38 * s) + ' ' + (x + 16 * s) + ',' + (y - 12 * s) + '"/>' +
-    '<polygon points="' + (x - 13 * s) + ',' + (y - 24 * s) + ' ' + x + ',' + (y - 48 * s) + ' ' + (x + 13 * s) + ',' + (y - 24 * s) + '"/>' +
-    '<polygon points="' + (x - 10 * s) + ',' + (y - 36 * s) + ' ' + x + ',' + (y - 56 * s) + ' ' + (x + 10 * s) + ',' + (y - 36 * s) + '"/>' +
-    '<rect x="' + (x - 2 * s) + '" y="' + (y - 12 * s) + '" width="' + (4 * s) + '" height="' + (12 * s) + '"/></g>';
+// New scene art for My Words, built to match Joel's example poster:
+// soft gradient skies, a large celestial disc, layered hazy ridges with
+// smooth bezier crests, tiered pine silhouettes, and a winding river
+// catching the light. One landscape, dressed by time and season.
+function pinePath(){
+  // One continuous pine silhouette in local coords: origin at trunk
+  // base, about 70 wide and 124 tall, with scalloped tiered edges like
+  // the pines in the example poster (no stacked separate shapes).
+  return '<path d="M0 -124 ' +
+    'Q7 -112 10 -100 Q6 -96 5 -93 Q13 -86 17 -79 Q11 -73 10 -70 ' +
+    'Q19 -63 24 -57 Q16 -50 15 -46 Q26 -39 30 -32 Q21 -25 20 -21 ' +
+    'Q30 -14 35 -5 L4 -1 L4 0 L-4 0 L-4 -1 L-35 -5 ' +
+    'Q-30 -14 -20 -21 Q-21 -25 -30 -32 Q-26 -39 -15 -46 Q-16 -50 -24 -57 ' +
+    'Q-19 -63 -10 -70 Q-11 -73 -17 -79 Q-13 -86 -5 -93 Q-6 -96 -10 -100 ' +
+    'Q-7 -112 0 -124 Z"/>';
+}
+function pineTree(x, y, s, c, op){
+  return '<g transform="translate(' + x + ' ' + y + ') scale(' + s + ')" fill="' + c + '"' +
+    (op ? ' opacity="' + op + '"' : '') + '>' + pinePath() + '</g>';
 }
 function bareTree(x, y, s, c){
-  return '<g stroke="' + c + '" stroke-width="' + (3 * s) + '" fill="none" stroke-linecap="round">' +
-    '<path d="M' + x + ' ' + y + ' V' + (y - 32 * s) + '"/>' +
-    '<path d="M' + x + ' ' + (y - 18 * s) + ' L' + (x - 12 * s) + ' ' + (y - 30 * s) + '"/>' +
-    '<path d="M' + x + ' ' + (y - 24 * s) + ' L' + (x + 11 * s) + ' ' + (y - 36 * s) + '"/>' +
-    '<path d="M' + x + ' ' + (y - 32 * s) + ' L' + (x - 6 * s) + ' ' + (y - 44 * s) + '"/></g>';
+  return '<g transform="translate(' + x + ' ' + y + ') scale(' + s + ')" stroke="' + c +
+    '" stroke-width="3.4" fill="none" stroke-linecap="round">' +
+    '<path d="M0 0 C -1 -22, 1 -44, 0 -66"/>' +
+    '<path d="M0 -26 C -10 -32, -16 -40, -21 -50"/>' +
+    '<path d="M0 -38 C 9 -44, 14 -52, 18 -62"/>' +
+    '<path d="M0 -52 C -7 -58, -11 -65, -13 -74"/>' +
+    '<path d="M0 -66 C 5 -72, 8 -78, 9 -86"/>' +
+    '<path d="M-21 -50 C -25 -53, -28 -57, -30 -62" stroke-width="2.2"/>' +
+    '<path d="M18 -62 C 22 -65, 25 -69, 26 -74" stroke-width="2.2"/></g>';
+}
+function canopyTree(x, y, s, trunk, cols){
+  return '<g transform="translate(' + x + ' ' + y + ') scale(' + s + ')">' +
+    '<rect x="-2.6" y="-20" width="5.2" height="20" fill="' + trunk + '"/>' +
+    '<circle cx="-14" cy="-26" r="12" fill="' + cols[0] + '"/>' +
+    '<circle cx="14" cy="-27" r="13" fill="' + cols[1] + '"/>' +
+    '<circle cx="0" cy="-37" r="16" fill="' + cols[0] + '"/>' +
+    '<circle cx="-5" cy="-30" r="9" fill="' + cols[2] + '"/>' +
+    '<circle cx="9" cy="-22" r="8" fill="' + cols[1] + '"/></g>';
 }
 function blossomTree(x, y, s, trunk){
-  return '<g><rect x="' + (x - 2.5 * s) + '" y="' + (y - 20 * s) + '" width="' + (5 * s) + '" height="' + (20 * s) + '" fill="' + trunk + '"/>' +
-    '<circle cx="' + (x - 13 * s) + '" cy="' + (y - 24 * s) + '" r="' + (11 * s) + '" fill="#E9A9C0"/>' +
-    '<circle cx="' + (x + 13 * s) + '" cy="' + (y - 25 * s) + '" r="' + (12 * s) + '" fill="#EFC0D2"/>' +
-    '<circle cx="' + x + '" cy="' + (y - 33 * s) + '" r="' + (16 * s) + '" fill="#E9A9C0"/></g>';
+  return canopyTree(x, y, s, trunk, ["#E9A9C0", "#EFC0D2", "#F3CBDC"]);
+}
+
+const RIDGE_FAR = "M0 224 C 50 214, 84 216, 118 209 L 178 207 C 204 207, 214 216, 240 220 C 300 229, 352 219, 420 223 C 484 228, 544 218, 600 225";
+const RIDGE_FAR2 = "M0 246 C 70 234, 132 242, 192 236 C 252 230, 302 242, 358 237 C 402 233, 432 226, 470 234 C 522 242, 566 238, 600 244";
+const RIDGE_MID = "M0 266 C 80 254, 150 265, 220 257 C 268 251, 302 261, 338 256 C 402 250, 470 263, 530 255 C 560 251, 586 256, 600 258";
+const HILL_L = "M0 340 V266 C 58 261, 118 279, 168 295 C 208 307, 228 321, 238 340 Z";
+const HILL_R = "M600 340 V256 C 546 260, 506 279, 471 297 C 441 311, 426 324, 419 340 Z";
+const RIDGE_FORE = "M0 310 C 110 300, 230 311, 340 305 C 450 299, 540 307, 600 303";
+const SUN_HILL = "M348 264 C 384 218, 452 210, 498 240 C 518 253, 528 261, 534 264 L534 306 L348 306 Z";
+const RIVER = "M323 256 C 331 270, 319 284, 307 298 C 293 314, 297 328, 311 340 L 373 340 C 357 325, 353 311, 363 297 C 373 283, 357 267, 341 256 Z";
+const RIVER_GLINT = "M331 260 C 335 277, 320 293, 324 309 C 327 323, 332 333, 336 340";
+
+const SCENE_STARS = [[28,26,1.5,.85],[74,64,1.1,.55],[118,30,1.3,.8],[168,84,1,.45],
+  [206,38,1.4,.75],[252,70,1,.5],[292,24,1.2,.7],[338,58,1.5,.9],[382,30,1,.5],
+  [420,86,1.1,.55],[470,20,1.3,.8],[512,64,1,.5],[548,34,1.5,.85],[576,96,1.1,.5],
+  [52,120,1,.4],[150,140,1.1,.45],[238,118,1,.4],[360,140,1,.45],[540,150,1.1,.4],
+  [96,168,1,.35],[430,168,1,.35],[584,180,1,.4],[20,190,1,.3],[316,96,1,.4]];
+
+const SCENE_PAL = {
+  morning: {
+    spring:  { sky: ["#A9CDEA", "#D8EAF2", "#F6E7C3", "#FBD9A0", "#F9BE78"], far: "#E7BE8E", far2: "#D99A5F", sunhill: "#C97A45", mid: "#5F7E39", near: "#274435", fore: "#0C1D18", water: ["#FBE7BC", "#EFD3A6", "#A8BED2"] },
+    summer:  { sky: ["#93BFE6", "#C8E2F0", "#F6E3B8", "#FBD093", "#F9B96E"], far: "#E7BE8E", far2: "#D98E56", sunhill: "#CE6B3E", mid: "#5E7A35", near: "#1E4028", fore: "#0A1A12", water: ["#FBE7BC", "#F0D2A0", "#9FBED4"] },
+    autumn:  { sky: ["#9CC3E5", "#D5E4EC", "#F6E0B4", "#FBCB8C", "#F9A95E"], far: "#EDC493", far2: "#D9834A", sunhill: "#C25A2E", mid: "#A05E2C", near: "#4A2A14", fore: "#170D06", water: ["#FBE0B0", "#EDBE8C", "#A08A78"] },
+    winter:  { sky: ["#A8BECB", "#DCE8EC", "#F2E4C4", "#EFC9A0", "#E4B98E"], far: "#B9CBD8", far2: "#A9BCC9", sunhill: null, mid: "#8FA9BC", near: "#546F82", fore: "#22394A", water: ["#EDF3F6", "#D7E6EE", "#B4C9D6"] }
+  },
+  afternoon: {
+    spring:  { sky: ["#3E8FD2", "#79BCE9", "#BDE6F8", "#EAF9FF"], far: "#A9CF8E", far2: "#8CBE76", sunhill: null, mid: "#5DA06B", near: "#2E6B46", fore: "#173F2C", water: ["#DFF3FB", "#BFE3F2", "#8FC3DE"] },
+    summer:  { sky: ["#3E8FD2", "#6FB4E8", "#B4E2F8", "#EAF9FF"], far: "#8FC48A", far2: "#6FB273", sunhill: null, mid: "#4E9A58", near: "#22573A", fore: "#123524", water: ["#DFF3FB", "#BFE3F2", "#84BCDD"] },
+    autumn:  { sky: ["#4A90CC", "#84BCE6", "#C4E6F6", "#F2F0DC"], far: "#D9A45E", far2: "#C98F45", sunhill: null, mid: "#B26F33", near: "#6B3A1E", fore: "#2E1A0C", water: ["#E8EDD8", "#CBD8BC", "#93A98E"] },
+    winter:  { sky: ["#7FA8C4", "#B9D2E2", "#E2EEF4", "#F0F6F9"], far: "#B9CBD8", far2: "#A4BAC9", sunhill: null, mid: "#8FA9BC", near: "#5E7C90", fore: "#2C4757", water: ["#F2F8FB", "#DCEBF3", "#AECADB"] }
+  },
+  evening: {
+    spring:  { sky: ["#081C3E", "#10325F", "#1B4A80", "#2563A0"], far: "#2F6FA8", far2: "#26639C", sunhill: null, mid: "#1E5E9C", near: "#123A63", fore: "#081A30", water: ["#33587E", "#274B73", "#162F52"] },
+    summer:  { sky: ["#071A38", "#0E2E5C", "#1A487E", "#246099"], far: "#2C6AA3", far2: "#245F95", sunhill: null, mid: "#1C5A96", near: "#113663", fore: "#071628", water: ["#2F547C", "#234671", "#142C4E"] },
+    autumn:  { sky: ["#0A1E40", "#122F5A", "#1D4A7C", "#2A5E96"], far: "#2F6FA8", far2: "#26639C", sunhill: null, mid: "#1E5E9C", near: "#143E66", fore: "#0A1C33", water: ["#33587E", "#274B73", "#162F52"] },
+    winter:  { sky: ["#0A1B33", "#14304F", "#274B73", "#3A5F83"], far: "#B9CBD8", far2: "#6B869C", sunhill: null, mid: "#55708A", near: "#2E4A61", fore: "#122636", water: ["#5E7E99", "#47637E", "#243A52"] }
+  }
+};
+function darken(hex, f){
+  const n = parseInt(hex.slice(1), 16);
+  const r = Math.round(((n >> 16) & 255) * f), g = Math.round(((n >> 8) & 255) * f), b = Math.round((n & 255) * f);
+  return "rgb(" + r + "," + g + "," + b + ")";
 }
 function sceneSVG(time, season){
-  const sky = (season === "winter" ? SCENE_WINTER_SKY : SCENE_SKY)[time];
-  const land = SCENE_LAND[season];
-  let water = SCENE_WATER[time];
-  if (season === "winter") water = "#D7E6EE";
-  let s = '<svg viewBox="0 0 580 190" preserveAspectRatio="xMidYMid slice" role="img" aria-label="' + time + " in " + season + '">';
-  s += '<defs><linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">' +
-    '<stop offset="0" stop-color="' + sky[0] + '"/><stop offset=".45" stop-color="' + sky[1] + '"/>' +
-    '<stop offset=".78" stop-color="' + sky[2] + '"/><stop offset="1" stop-color="' + sky[3] + '"/></linearGradient></defs>';
-  s += '<rect width="580" height="190" fill="url(#skyG)"/>';
-  if (time === "morning"){
-    s += '<g fill="rgba(255,255,255,.5)"><ellipse cx="118" cy="40" rx="44" ry="9"/><ellipse cx="468" cy="28" rx="54" ry="8"/></g>';
-    s += '<circle cx="290" cy="88" r="56" fill="rgba(255,214,130,.32)"/>';
-    s += '<circle cx="290" cy="84" r="34" fill="#FFE9A8"/>';
-  }
-  if (time === "afternoon"){
-    s += '<circle cx="472" cy="40" r="34" fill="rgba(255,240,170,.38)"/>';
-    s += '<circle cx="472" cy="40" r="21" fill="#FFF3B0"/>';
-    s += '<g fill="rgba(255,255,255,.92)"><ellipse cx="112" cy="36" rx="40" ry="10"/><ellipse cx="140" cy="28" rx="26" ry="9"/>' +
-      '<ellipse cx="300" cy="20" rx="30" ry="8"/><ellipse cx="522" cy="64" rx="30" ry="8"/></g>';
-  }
-  s += '<path d="M0 104 L90 70 L180 96 L270 62 L360 92 L450 68 L580 98 L580 190 L0 190 Z" fill="' + land.far + '"/>';
-  if (season === "winter")
-    s += '<polyline points="0,104 90,70 180,96 270,62 360,92 450,68 580,98" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="5" stroke-linejoin="round"/>';
-  s += '<path d="M0 128 L110 96 L230 124 L350 94 L470 120 L580 100 L580 190 L0 190 Z" fill="' + land.mid + '"/>';
-  if (season === "winter")
-    s += '<polyline points="0,128 110,96 230,124 350,94 470,120 580,100" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="4" stroke-linejoin="round"/>';
-  s += pineTree(56, 122, .75, land.tree);
-  s += pineTree(150, 110, .58, land.tree);
-  s += pineTree(516, 114, .68, land.tree);
-  s += '<path d="M0 158 L140 138 L300 160 L440 140 L580 162 L580 190 L0 190 Z" fill="' + land.near + '"/>';
-  s += '<path d="M262 190 C288 172 302 164 330 152 L358 152 C332 166 316 176 308 190 Z" fill="' + water + '" opacity=".85"/>';
-  if (season === "winter"){
-    s += bareTree(34, 178, 1.1, land.tree);
-    s += pineTree(94, 178, .9, land.tree);
-    s += bareTree(498, 180, 1.15, land.tree);
-    s += pineTree(548, 170, .85, land.tree);
-  } else if (season === "spring"){
-    s += pineTree(34, 174, 1.15, land.tree);
-    s += pineTree(94, 178, .9, land.tree);
-    s += blossomTree(498, 180, 1.05, land.tree);
-    s += pineTree(548, 170, .85, land.tree);
-  } else {
-    s += pineTree(34, 174, 1.15, land.tree);
-    s += pineTree(94, 178, .9, land.tree);
-    s += pineTree(498, 176, 1.2, land.tree);
-    s += pineTree(548, 170, .85, land.tree);
-  }
-  if (time === "evening") s += '<rect width="580" height="190" fill="#081C3E" opacity=".34"/>';
-  if (time === "morning") s += '<rect width="580" height="190" fill="#FF9E50" opacity=".07"/>';
+  const P = SCENE_PAL[time][season];
+  const winter = season === "winter";
+  const SKY_OFF = { 4: [0, .35, .7, 1], 5: [0, .3, .55, .8, 1] };
+  let stops = "";
+  P.sky.forEach(function(c, i){ stops += '<stop offset="' + SKY_OFF[P.sky.length][i] + '" stop-color="' + c + '"/>'; });
+  let s = '<svg viewBox="0 0 600 340" preserveAspectRatio="xMidYMid slice" role="img" aria-label="' + time + " in " + season + '">';
+  s += '<defs>' +
+    '<linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">' + stops + '</linearGradient>' +
+    '<radialGradient id="haloG"><stop offset="0" stop-color="rgba(255,226,160,.85)"/><stop offset=".55" stop-color="rgba(255,205,120,.32)"/><stop offset="1" stop-color="rgba(255,205,120,0)"/></radialGradient>' +
+    '<radialGradient id="sunG"><stop offset="0" stop-color="#FFF6CE"/><stop offset=".7" stop-color="#FFEDAC"/><stop offset="1" stop-color="#FFE49A"/></radialGradient>' +
+    '<radialGradient id="moonGlowG"><stop offset="0" stop-color="rgba(190,220,255,.5)"/><stop offset=".6" stop-color="rgba(170,205,250,.18)"/><stop offset="1" stop-color="rgba(170,205,250,0)"/></radialGradient>' +
+    '<radialGradient id="dayHaloG"><stop offset="0" stop-color="rgba(255,246,200,.8)"/><stop offset=".6" stop-color="rgba(255,240,180,.3)"/><stop offset="1" stop-color="rgba(255,240,180,0)"/></radialGradient>' +
+    '<linearGradient id="waterG" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0" stop-color="' + P.water[0] + '"/><stop offset=".45" stop-color="' + P.water[1] + '"/><stop offset="1" stop-color="' + P.water[2] + '"/></linearGradient>' +
+    '<filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="5"/></filter>' +
+    '<filter id="soft2" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="2"/></filter>' +
+    '</defs>';
+  s += '<rect width="600" height="340" fill="url(#skyG)"/>';
   if (time === "evening"){
     s += '<g fill="#FFFFFF">';
-    SCENE_STARS.forEach(function(st){
-      s += '<circle cx="' + st[0] + '" cy="' + st[1] + '" r="' + st[2] + '" opacity="' + st[3] + '"/>';
-    });
+    SCENE_STARS.forEach(function(st){ s += '<circle cx="' + st[0] + '" cy="' + st[1] + '" r="' + st[2] + '" opacity="' + st[3] + '"/>'; });
     s += '</g>';
-    s += '<circle cx="472" cy="52" r="31" fill="rgba(220,235,255,.13)"/>';
-    s += '<mask id="moonM"><rect width="580" height="190" fill="white"/><circle cx="487" cy="41" r="16.5" fill="black"/></mask>';
-    s += '<circle cx="472" cy="52" r="20" fill="#F4F7FB" mask="url(#moonM)"/>';
+    s += '<circle cx="452" cy="126" r="118" fill="url(#moonGlowG)"/>';
+    s += '<mask id="moonM"><rect width="600" height="340" fill="white"/><circle cx="468" cy="114" r="24" fill="black"/></mask>';
+    s += '<circle cx="452" cy="126" r="27" fill="#F4F7FB" mask="url(#moonM)"/>';
   }
   if (time === "morning"){
-    s += '<g stroke="#3A4A56" stroke-width="2" fill="none" stroke-linecap="round" opacity=".75">' +
-      '<path d="M206 72 q6 -6 12 0 q6 -6 12 0"/><path d="M246 58 q5 -5 10 0 q5 -5 10 0"/>' +
-      '<path d="M352 66 q5 -5 10 0 q5 -5 10 0"/></g>';
+    s += '<circle cx="318" cy="222" r="185" fill="url(#haloG)"/>';
+    s += '<circle cx="318" cy="222" r="94" fill="url(#sunG)"/>';
+    s += '<g filter="url(#soft)" fill="#FFFFFF"><ellipse cx="452" cy="112" rx="72" ry="9" opacity=".4"/><ellipse cx="492" cy="146" rx="56" ry="7" opacity=".32"/><ellipse cx="150" cy="152" rx="62" ry="8" opacity=".28"/></g>';
+    s += '<g filter="url(#soft)" fill="#FFDCA8"><ellipse cx="330" cy="98" rx="48" ry="6" opacity=".4"/><ellipse cx="318" cy="196" rx="104" ry="6" opacity=".5"/></g>';
+    s += '<g stroke="#4A3F3A" stroke-width="2.1" fill="none" stroke-linecap="round" opacity=".82">' +
+      '<path d="M276 178 q6 -6 12 0 q6 -6 12 0"/><path d="M318 158 q5 -5 10 0 q5 -5 10 0"/>' +
+      '<path d="M352 186 q5 -5 10 0 q5 -5 10 0"/><path d="M298 196 q4 -4 8 0 q4 -4 8 0"/>' +
+      '<path d="M262 158 q4 -4 9 0 q4 -4 9 0"/><path d="M366 162 q4 -4 8 0 q4 -4 8 0"/></g>';
+  }
+  if (time === "afternoon"){
+    s += '<circle cx="478" cy="74" r="70" fill="url(#dayHaloG)"/>';
+    s += '<circle cx="478" cy="74" r="27" fill="url(#sunG)"/>';
+    s += '<g fill="#FFFFFF"><g opacity=".95"><ellipse cx="150" cy="106" rx="42" ry="12"/><ellipse cx="180" cy="96" rx="28" ry="10"/><ellipse cx="122" cy="98" rx="24" ry="8"/></g>' +
+      '<g opacity=".9"><ellipse cx="345" cy="120" rx="32" ry="9"/><ellipse cx="368" cy="112" rx="20" ry="7"/></g>' +
+      '<g opacity=".75"><ellipse cx="536" cy="128" rx="30" ry="8"/><ellipse cx="556" cy="121" rx="20" ry="7"/></g></g>';
+  }
+  // Far mesa layer (hazy), then the nearer far ridge.
+  s += '<path d="' + RIDGE_FAR + ' L600 340 L0 340 Z" fill="' + P.far + '"/>';
+  if (winter) s += '<path d="' + RIDGE_FAR + '" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="5" stroke-linejoin="round"/>';
+  if (time === "evening" && season === "autumn")
+    s += '<path d="' + RIDGE_FAR2 + ' L600 340 L0 340 Z" fill="#A05E2C" opacity=".26"/>';
+  s += '<path d="' + RIDGE_FAR2 + ' L600 340 L0 340 Z" fill="' + P.far2 + '"/>';
+  if (winter) s += '<path d="' + RIDGE_FAR2 + '" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="4" stroke-linejoin="round"/>';
+  if (P.sunhill) s += '<path d="' + SUN_HILL + '" fill="' + P.sunhill + '"/>';
+  // Mid ridge with a few hazy pines standing on it.
+  s += '<path d="' + RIDGE_MID + ' L600 340 L0 340 Z" fill="' + P.mid + '"/>';
+  if (winter) s += '<path d="' + RIDGE_MID + '" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="4" stroke-linejoin="round"/>';
+  s += pineTree(128, 264, .5, darken(P.mid, .62), .9);
+  s += pineTree(168, 270, .4, darken(P.mid, .62), .9);
+  s += pineTree(458, 264, .46, darken(P.mid, .62), .9);
+  s += pineTree(492, 270, .38, darken(P.mid, .62), .9);
+  // Near hills framing the valley, then the dark foreground.
+  s += '<path d="' + HILL_L + '" fill="' + P.near + '"/>';
+  s += '<path d="' + HILL_R + '" fill="' + P.near + '"/>';
+  s += '<path d="' + RIDGE_FORE + ' L600 340 L0 340 Z" fill="' + P.fore + '"/>';
+  // The river runs from the gap in the mid ridge down through the foreground.
+  s += '<path d="' + RIVER + '" fill="url(#waterG)" opacity="' + (time === "evening" ? ".8" : ".92") + '"/>';
+  s += '<path d="' + RIVER_GLINT + '" fill="none" stroke="' + (time === "evening" ? "rgba(220,238,255,.55)" : "rgba(255,248,220,.6)") + '" stroke-width="6" stroke-linecap="round" filter="url(#soft2)"/>';
+  // Foreground trees.
+  const treeC = darken(P.fore, .8);
+  if (winter){
+    s += bareTree(44, 330, 1.05, treeC);
+    s += pineTree(106, 330, .95, treeC);
+    s += pineTree(498, 328, 1.05, treeC);
+    s += bareTree(556, 332, 1.1, treeC);
+  } else if (season === "spring"){
+    s += pineTree(42, 326, 1.2, treeC);
+    s += pineTree(100, 330, .95, treeC);
+    s += (time === "evening" ? canopyTree(510, 336, .95, treeC, ["#4A2438", "#55304A", "#5E3244"]) : blossomTree(510, 336, .95, darken(P.near, .7)));
+    s += pineTree(562, 328, .9, treeC);
+  } else if (season === "autumn" && time !== "evening"){
+    s += pineTree(42, 326, 1.2, treeC);
+    s += canopyTree(112, 330, 1.0, darken(P.near, .7), ["#C97F35", "#B85C28", "#D99647"]);
+    s += pineTree(498, 328, 1.1, treeC);
+    s += canopyTree(556, 330, .9, darken(P.near, .7), ["#B85C28", "#C97F35", "#CE7430"]);
+  } else {
+    s += pineTree(42, 326, 1.25, treeC);
+    s += pineTree(100, 330, .95, treeC);
+    s += pineTree(498, 328, 1.15, treeC);
+    s += pineTree(556, 330, .9, treeC);
   }
   s += '</svg>';
   return s;
