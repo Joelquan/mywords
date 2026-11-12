@@ -175,6 +175,7 @@
   .cover:hover .cover-label{color:var(--on-card);}
   body[data-theme="papyrus"] .cover:hover .cover-label{color:#7E241C;}
   .cover.waiting{opacity:.48;}
+  body.on-home .cover.waiting{opacity:.64;}
   .cover.shake{animation:shake .32s ease;}
   @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}
   .scene{
@@ -433,6 +434,92 @@
     font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .25s;z-index:60;
   }
   .toast.show{opacity:1;}
+
+  /* ===== One screen: the frame carries the day (Nov 12, 2026) ===== */
+  :root{
+    --navh:70px;
+    --veil-a:rgba(3,18,40,.70); --veil-b:rgba(2,12,28,.62); --veil-brand:rgba(2,12,28,.36);
+  }
+  .scene{
+    position:fixed; top:0; left:0; right:0; bottom:var(--navh);
+    z-index:0; margin:0; border:none; border-radius:0; box-shadow:none;
+  }
+  #sceneArt{position:absolute; inset:0;}
+  .scene svg{display:block; width:100%; height:100%;}
+  .scene .greet{padding:56px 20px 36px;}
+  @media (max-width:480px){ .brandline{font-size:.84rem; letter-spacing:.04em; white-space:nowrap;} }
+  header{position:relative;}
+  .brandline{position:relative; z-index:2; display:inline-block; padding:3px 6px;}
+  .brandline::before, body.on-home .slotcaption::before{
+    content:""; position:absolute; z-index:-1; border-radius:999px;
+    background:var(--veil-brand);
+    -webkit-mask-image:radial-gradient(58% 100% at 50% 50%, #000 52%, rgba(0,0,0,0) 100%);
+    mask-image:radial-gradient(58% 100% at 50% 50%, #000 52%, rgba(0,0,0,0) 100%);
+  }
+  .brandline::before{inset:-4px -18px;}
+  #view-home{position:relative; z-index:1;}
+  @media (min-height:740px){
+    body.on-home{height:100dvh; overflow:hidden; padding:10px 10px 0;}
+    body.on-home #view-home{display:flex; flex-direction:column; height:calc(100dvh - 10px - var(--navh));}
+  }
+  body.on-home .card{
+    background:transparent !important; border:none; box-shadow:none; border-radius:0;
+    overflow:visible; position:relative;
+    flex:1 1 auto; min-height:0; margin-top:48px;
+    display:flex; flex-direction:column; gap:9px;
+  }
+  body.on-home .slotcaption{display:none;}
+  body.on-home .slotcaption::before{inset:-3px -16px;}
+  body.on-home .sealrow{
+    position:absolute; top:-22px; right:14px; padding:0; z-index:3; pointer-events:none;
+  }
+  body.on-home .seal{width:54px; height:54px;}
+  body.on-home section.block{
+    display:flex; flex-direction:column; flex:1 1 auto; min-height:0;
+  }
+  body.on-home section.block + section.block{border-top:none;}
+  body.on-home section.affirmation{background:transparent;}
+  body.on-home section.block.is-open{flex:0 0 auto;}
+  body.on-home .cover{
+    flex:1 1 auto; min-height:90px; justify-content:center;
+    padding:14px 18px; gap:8px; position:relative; z-index:0;
+  }
+  body.on-home .cover .cover-seal{width:42px; height:42px;}
+  body.on-home .phase-body{position:relative; z-index:0; padding:12px 16px 13px;}
+  body.on-home .cover::before, body.on-home .phase-body::before{
+    content:""; position:absolute; inset:0; z-index:-1; border-radius:20px;
+    background:linear-gradient(168deg, var(--veil-a), var(--veil-b));
+    backdrop-filter:blur(3px) saturate(1.06); -webkit-backdrop-filter:blur(3px) saturate(1.06);
+    -webkit-mask-image:radial-gradient(126% 102% at 50% 50%, #000 57%, rgba(0,0,0,.42) 82%, rgba(0,0,0,0) 100%);
+    mask-image:radial-gradient(126% 102% at 50% 50%, #000 57%, rgba(0,0,0,.42) 82%, rgba(0,0,0,0) 100%);
+  }
+  body.on-home .block h2{font-size:.68rem; letter-spacing:.28em; margin-bottom:8px;}
+  body.on-home .verse-text{font-size:clamp(15px, 2.02dvh, 19px); line-height:1.42;}
+  body.on-home .affirmation-text{font-size:clamp(13.5px, 1.84dvh, 17.5px); line-height:1.46;}
+  body.on-home .action-text{
+    font-size:clamp(13.5px, 1.84dvh, 17.5px); line-height:1.46; padding:12px 14px;
+  }
+  body.on-home .verse-ref{margin-top:12px; padding-top:10px; font-size:.78rem;}
+  body.on-home footer.actions{
+    flex:0 0 auto; margin-top:8px; position:relative; z-index:2;
+  }
+  body.on-home footer.actions button{padding:11px; font-size:.98rem;}
+
+  body.on-home #view-home.fit1 .card{margin-top:40px; gap:8px;}
+  body.on-home #view-home.fit1 .phase-body{padding:11px 15px 12px;}
+  body.on-home #view-home.fit1 .verse-text{font-size:clamp(14.2px, 1.94dvh, 19px);}
+  body.on-home #view-home.fit1 .affirmation-text, body.on-home #view-home.fit1 .action-text{
+    font-size:clamp(13px, 1.78dvh, 17.5px); line-height:1.44;
+  }
+  body.on-home #view-home.fit2 .card{margin-top:34px; gap:7px;}
+  body.on-home #view-home.fit2 .phase-body{padding:9px 14px 10px;}
+  body.on-home #view-home.fit2 .verse-text{font-size:clamp(13px, 1.8dvh, 19px); line-height:1.38;}
+  body.on-home #view-home.fit2 .affirmation-text, body.on-home #view-home.fit2 .action-text{
+    font-size:clamp(12.2px, 1.66dvh, 17.5px); line-height:1.40;
+  }
+  body.on-home #view-home.fit2 .verse-ref{margin-top:8px; padding-top:8px;}
+  body.on-home #view-home.fit2 .action-text{padding:9px 12px;}
+  body.on-home #view-home.fit2 .block h2{margin-bottom:6px;}
 </style>
 </head>
 <body>
@@ -624,6 +711,7 @@ const RIVER_CSS = {
   "--head-ink": "#C1E8FF", "--title-ink": "#FFFFFF", "--title-glow": "rgba(125,160,202,.5)", "--head-rule": "rgba(125,160,202,.9)",
   "--label": "#7DA0CA", "--page-label": "#7DA0CA", "--label-rule": "rgba(84,131,179,.75)", "--ref-ink": "#7DA0CA",
   "--on-card": "#FFFFFF", "--aff-ink": "#C1E8FF", "--act-ink": "#C1E8FF",
+  "--veil-a": "rgba(3,18,40,.70)", "--veil-b": "rgba(2,12,28,.62)", "--veil-brand": "rgba(2,12,28,.36)",
   "--tex": "none", "--tex-card": "none"
 };
 
@@ -646,6 +734,7 @@ const PAPYRUS_CSS = {
   "--head-ink": "#43331C", "--title-ink": "#3A2A16", "--title-glow": "rgba(122,74,26,.22)", "--head-rule": "rgba(122,74,26,.65)",
   "--label": "#7E241C", "--page-label": "#7E241C", "--label-rule": "rgba(126,36,28,.5)", "--ref-ink": "#7E241C",
   "--on-card": "#3A2A16", "--aff-ink": "#43331C", "--act-ink": "#43331C",
+  "--veil-a": "rgba(248,238,205,.85)", "--veil-b": "rgba(240,222,175,.79)", "--veil-brand": "rgba(248,238,205,.55)",
   "--tex": PARCH_TEX, "--tex-card": PARCH_TEX_CARD
 };
 
@@ -668,6 +757,7 @@ function rotCss(s){
     "--head-ink": ic, "--title-ink": "#FFFFFF", "--title-glow": hx(so, .5), "--head-rule": hx(so, .9),
     "--label": so, "--page-label": so, "--label-rule": hx(ac, .75), "--ref-ink": so,
     "--on-card": "#FFFFFF", "--aff-ink": ic, "--act-ink": ic,
+    "--veil-a": hx(cL, .72), "--veil-b": hx(bgD, .64), "--veil-brand": hx(bgD, .36),
     "--tex": "none", "--tex-card": "none"
   };
 }
@@ -691,6 +781,7 @@ function metalCss(m){
     "--head-ink": st[2], "--title-ink": st[2], "--title-glow": hx(st[2], .45), "--head-rule": hx(st[2], .8),
     "--label": m.soft, "--page-label": st[2], "--label-rule": hx(m.ink, .4), "--ref-ink": m.soft,
     "--on-card": m.ink, "--aff-ink": m.ink, "--act-ink": m.ink,
+    "--veil-a": hx(st[3], .58), "--veil-b": hx(m.bg[0], .58), "--veil-brand": hx(m.bg[0], .36),
     "--tex": "none", "--tex-card": "none"
   };
 }
@@ -1062,6 +1153,8 @@ function renderSlot(){
   const box = document.getElementById("sceneBox");
   box.setAttribute("data-time", currentSlot);
   document.getElementById("sceneArt").innerHTML = sceneSVG(currentSlot, seasonForDay(currentDay));
+  fitScene();
+  fitHome();
   resetVeil();
   updateSaveBtn();
 }
@@ -1086,6 +1179,7 @@ function resetVeil(){
     c.setAttribute("aria-expanded", "false");
     c.classList.toggle("waiting", i > 0);
     document.getElementById("phase" + i).classList.remove("open");
+    c.parentNode.classList.remove("is-open");
   }
 }
 function revealPhase(i){
@@ -1102,6 +1196,9 @@ function revealPhase(i){
   c.style.display = "none";
   c.setAttribute("aria-expanded", "true");
   document.getElementById("phase" + i).classList.add("open");
+  c.parentNode.classList.add("is-open");
+  fitHome();
+  setTimeout(fitHome, 560);
   revealStep++;
   if (revealStep < 3)
     document.getElementById("cover" + revealStep).classList.remove("waiting");
@@ -1164,6 +1261,57 @@ function renderSaved(){
 /* The four views and the bottom navigation. Only one view stands at
    a time, the app opens on Home, and the nav remembers nothing. */
 let currentView = "home";
+
+/* The scene fills Home edge to edge. The drawing is 600 by 340; the
+   crop window is the slice of it with the screen's own shape, set as
+   the viewBox, and slid sideways so the sun or moon of the hour stays
+   in view: morning sun at x 318, afternoon sun at 478, evening moon
+   at 452. Nothing in the drawing is redrawn. */
+const SCENE_FOCUS = { morning: 318, afternoon: 478, evening: 452 };
+function fitScene(){
+  const box = document.getElementById("sceneBox");
+  if (!box) return;
+  const nav = document.querySelector(".bottomnav");
+  if (nav && nav.offsetHeight)
+    document.documentElement.style.setProperty("--navh", nav.offsetHeight + "px");
+  const svg = box.querySelector("svg");
+  if (!svg) return;
+  const w = box.clientWidth, h = box.clientHeight;
+  if (!w || !h) return;
+  const aspect = w / h, DA = 600 / 340;
+  let vx = 0, vy = 0, vw = 600, vh = 340;
+  if (aspect < DA){
+    vw = 340 * aspect;
+    const fx = SCENE_FOCUS[currentSlot] || 300;
+    vx = Math.max(0, Math.min(600 - vw, fx - vw / 2));
+  } else if (aspect > DA){
+    vh = 600 / aspect;
+    vy = Math.max(0, Math.min(340 - vh, 170 - vh / 2));
+  }
+  svg.setAttribute("viewBox",
+    vx.toFixed(1) + " " + vy.toFixed(1) + " " + vw.toFixed(1) + " " + vh.toFixed(1));
+}
+window.addEventListener("resize", function(){ fitScene(); fitHome(); });
+
+
+/* One screen insurance: if a long day's revealed text would run past
+   the Share and Save footer, the view steps its type and spacing down
+   a level (fit1, then fit2) until it fits. Short days never step. */
+function fitHome(){
+  const home = document.getElementById("view-home");
+  if (!home || home.hidden) return;
+  home.classList.remove("fit1", "fit2");
+  const foot = document.querySelector("footer.actions");
+  const blocks = home.querySelectorAll("section.block");
+  if (!foot || !blocks.length) return;
+  const last = blocks[blocks.length - 1];
+  const limit = foot.getBoundingClientRect().top - 6;
+  if (last.getBoundingClientRect().bottom <= limit) return;
+  home.classList.add("fit1");
+  if (last.getBoundingClientRect().bottom <= limit) return;
+  home.classList.add("fit2");
+}
+
 function showView(name){
   currentView = name;
   const views = ["home", "bible", "saved", "settings"];
@@ -1174,6 +1322,9 @@ function showView(name){
     items[i].classList.toggle("on", items[i].getAttribute("data-view") === name);
   if (name === "bible") ensureBible();
   if (name === "saved") renderSaved();
+  document.body.classList.toggle("on-home", name === "home");
+  fitScene();
+  fitHome();
   window.scrollTo(0, 0);
 }
 (function wireBottomNav(){
@@ -1573,6 +1724,7 @@ document.getElementById("sharePicBtn").addEventListener("click", function(){
   }, "image/png");
 });
 render(currentDay);
+showView("home");
 </script>
 </body>
 </html>
