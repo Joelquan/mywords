@@ -44,35 +44,13 @@
   header{
     text-align:center;
     color:var(--head-ink);
-    padding:26px 8px 6px;
+    padding:10px 8px 0;
   }
-  header::after{
-    content:"";
-    display:block;
-    width:180px;
-    height:1px;
-    margin:18px auto 0;
-    background:linear-gradient(90deg, rgba(0,0,0,0), var(--head-rule), rgba(0,0,0,0));
-  }
-  header h1{
-    font-size:2.2rem;
-    letter-spacing:.16em;
-    color:var(--title-ink);
-    font-weight:normal;
-    text-shadow:0 2px 22px var(--title-glow);
-  }
-  header .dateline{
-    margin-top:10px;
-    font-size:1rem;
-    letter-spacing:.03em;
+  .brandline{
+    font-size:.92rem;
+    letter-spacing:.08em;
     color:var(--head-ink);
-  }
-  header .theme{
-    margin-top:7px;
-    font-size:.78rem;
-    letter-spacing:.32em;
-    text-transform:uppercase;
-    color:var(--page-label);
+    margin-bottom:12px;
   }
   .themebar{
     display:flex;
@@ -226,31 +204,34 @@
   .greet-slot{
     margin-top:4px;font-size:.7rem;letter-spacing:.28em;text-transform:uppercase;opacity:.88;
   }
-  .tabs{display:flex;gap:8px;margin:14px 0 0;}
-  .tab{
-    flex:1;font-family:inherit;cursor:pointer;text-align:center;
+  .iconrow{display:flex;gap:8px;justify-content:center;margin:14px 0 0;}
+  .itab{
+    font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+    width:40px;height:34px;border-radius:999px;
     background:linear-gradient(180deg, var(--nav-bg-a), var(--nav-bg-b));
-    color:var(--nav-ink);border:1px solid var(--nav-border);border-radius:12px;
-    padding:10px 4px 9px;position:relative;
-    box-shadow:0 4px 14px var(--shadow2), inset 0 1px 0 var(--hl);
+    color:var(--nav-ink);border:1px solid var(--nav-border);
+    box-shadow:0 3px 10px var(--shadow2), inset 0 1px 0 var(--hl);
     transition:background .2s, transform .12s;
   }
-  .tab .t{display:block;font-size:.96rem;letter-spacing:.04em;}
-  .tab .s{
-    display:block;margin-top:3px;font-size:.6rem;letter-spacing:.16em;
-    text-transform:uppercase;color:var(--label);
-  }
-  .tab .nowtag{
-    display:none;margin-top:5px;font-size:.58rem;letter-spacing:.22em;
-    text-transform:uppercase;color:var(--label);
-  }
-  .tab.now .nowtag{display:block;}
-  .tab.now .nowtag::before{content:"● ";font-size:.5rem;vertical-align:2px;}
-  .tab.on{
+  .itab svg{width:19px;height:19px;display:block;}
+  .itab:active{transform:translateY(1px);}
+  .itab[aria-expanded="true"]{
     background:linear-gradient(180deg, var(--btn-a), var(--btn-b));
-    color:var(--btn-ink);border-color:var(--btn-border);font-weight:bold;
+    color:var(--btn-ink);border-color:var(--btn-border);
   }
-  .tab.on .s, .tab.on .nowtag{color:var(--btn-ink);opacity:.85;}
+  .cpanel{
+    margin:10px auto 0;max-width:520px;padding:12px 12px 13px;
+    background:linear-gradient(168deg, var(--card-a), var(--card-b));
+    border:1px solid var(--card-border);border-radius:14px;
+    box-shadow:0 14px 34px var(--shadow2), inset 0 1px 0 var(--hl);
+  }
+  .cpanel[hidden]{display:none;}
+  .cpanel .themebar{margin:0;}
+  .cpanel nav.bar{margin:0;}
+  .slotcaption{
+    padding:16px 20px 0;text-align:center;
+    font-size:.76rem;letter-spacing:.3em;text-transform:uppercase;color:var(--label);
+  }
   .block h2{
     display:flex;
     align-items:center;
@@ -321,9 +302,7 @@
   @media (max-width:480px){
     .phase-body{padding:25px 22px;}
     .cover{padding:32px 20px 28px;}
-    header h1{font-size:1.9rem;}
     .verse-text{font-size:1.36rem;}
-    .tab .t{font-size:.86rem;}
     .greet-line{font-size:1.24rem;}
   }
   footer.actions{
@@ -430,9 +409,7 @@
 <body>
 <div class="frame">
   <header>
-    <h1>My Words</h1>
-    <div class="dateline" id="dateline"></div>
-    <div class="theme" id="themeLine"></div>
+    <div class="brandline" id="dateline"></div>
     <div class="scene" id="sceneBox" data-time="morning">
       <div id="sceneArt"></div>
       <div class="greet">
@@ -440,29 +417,35 @@
         <div class="greet-slot" id="greetSlot">Morning · Who Christ Is</div>
       </div>
     </div>
-    <div class="tabs" role="tablist" aria-label="Time of day">
-      <button type="button" class="tab" id="tab-morning" data-slot="morning" role="tab" aria-selected="false"><span class="t">Morning</span><span class="s">Who Christ Is</span><span class="nowtag">Now</span></button>
-      <button type="button" class="tab" id="tab-afternoon" data-slot="afternoon" role="tab" aria-selected="false"><span class="t">Afternoon</span><span class="s">General</span><span class="nowtag">Now</span></button>
-      <button type="button" class="tab" id="tab-evening" data-slot="evening" role="tab" aria-selected="false"><span class="t">Evening</span><span class="s">Who I Am in Christ</span><span class="nowtag">Now</span></button>
-    </div>
   </header>
 
-  <div class="themebar" role="group" aria-label="Theme">
-    <button type="button" class="tchip" data-set-theme="river">River Blue</button>
-    <button type="button" class="tchip" data-set-theme="rot24">24 Colors</button>
-    <button type="button" class="tchip" data-set-theme="metal">Metallic</button>
-    <button type="button" class="tchip" data-set-theme="papyrus">Papyrus</button>
+  <div class="iconrow" role="group" aria-label="Controls">
+    <button type="button" class="itab" id="themeTab" aria-expanded="false" aria-controls="themePanel" aria-label="Theme" title="Theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5c0 0-6 6.6-6 10.5a6 6 0 0 0 12 0C18 10.1 12 3.5 12 3.5z"/><path d="M9.2 14.2a2.9 2.9 0 0 0 2.4 3.4"/></svg></button>
+    <button type="button" class="itab" id="navTab" aria-expanded="false" aria-controls="navPanel" aria-label="Day navigation" title="Day navigation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7.5h12.5"/><path d="M13 3.8l3.7 3.7-3.7 3.7"/><path d="M20 16.5H7.5"/><path d="M11 12.8l-3.7 3.7 3.7 3.7"/></svg></button>
   </div>
 
+  <div class="cpanel" id="themePanel" hidden>
+    <div class="themebar" role="group" aria-label="Theme">
+      <button type="button" class="tchip" data-set-theme="river">River Blue</button>
+      <button type="button" class="tchip" data-set-theme="rot24">24 Colors</button>
+      <button type="button" class="tchip" data-set-theme="metal">Metallic</button>
+      <button type="button" class="tchip" data-set-theme="papyrus">Papyrus</button>
+    </div>
+  </div>
+
+  <div class="cpanel" id="navPanel" hidden>
+    <nav class="bar">
+      <button id="prevBtn" type="button">Prev Day</button>
+      <button id="todayBtn" type="button">Today</button>
+      <button id="nextBtn" type="button">Next Day</button>
+      <span class="jump">
+        <input id="dayJump" type="number" min="1" max="365" placeholder="Day">
+        <button id="jumpBtn" type="button">Go</button>
+      </span>
+    </nav>
+  </div>
 
   <nav class="bar">
-    <button id="prevBtn" type="button">Prev Day</button>
-    <button id="todayBtn" type="button">Today</button>
-    <button id="nextBtn" type="button">Next Day</button>
-    <span class="jump">
-      <input id="dayJump" type="number" min="1" max="365" placeholder="Day">
-      <button id="jumpBtn" type="button">Go</button>
-    </span>
     <span class="jump">
       <input id="dateJump" type="date">
       <button id="dateBtn" type="button">Open Date</button>
@@ -470,6 +453,7 @@
   </nav>
 
   <main class="card">
+    <div class="slotcaption" id="slotCaption"></div>
     <div class="sealrow"><div class="seal" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="63" cy="64" r="52" fill="#5E170E" opacity=".55"/><circle cx="60" cy="60" r="52" fill="#7E241C"/><circle cx="60" cy="60" r="52" fill="none" stroke="#5E170E" stroke-width="3"/><circle cx="60" cy="60" r="41" fill="none" stroke="#F0D9B5" stroke-width="1.6" opacity=".65"/><path d="M60 33 V79 M45 49 H75" stroke="#F3E2BC" stroke-width="7" stroke-linecap="round" fill="none"/><text x="60" y="99" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" letter-spacing="2" fill="#F3E2BC">MW</text></svg></div></div>
     <section class="block verse">
       <button type="button" class="cover" id="cover0" aria-expanded="false" aria-controls="phase0">
@@ -794,11 +778,12 @@ const SLOTS = {
 const SLOT_ORDER = ["morning", "afternoon", "evening"];
 function slotForNow(){
   const h = new Date().getHours();
-  if (h >= 5 && h < 12) return "morning";
-  if (h >= 12 && h < 17) return "afternoon";
+  if (h < 12) return "morning";
+  if (h < 17) return "afternoon";
   return "evening";
 }
 let currentSlot = slotForNow();
+let followClock = true;
 function seasonForDay(day){
   const m = new Date(new Date().getFullYear(), 0, day).getMonth();
   if (m >= 2 && m <= 4) return "spring";
@@ -1022,7 +1007,8 @@ function render(day){
   const e = DATA[currentDay - 1];
   if(!e) return;
   document.getElementById("dateline").textContent =
-    dateLabelForDay(currentDay) + " · Day " + currentDay + " of 365";
+    "My Words · Day " + currentDay + " of 365 · " +
+    dateLabelForDay(currentDay) + ", " + new Date().getFullYear();
   renderSlot();
   renderSaved();
   window.scrollTo({top:0, behavior:"smooth"});
@@ -1032,24 +1018,16 @@ function renderSlot(){
   if(!e) return;
   const s = e[currentSlot];
   const S = SLOTS[currentSlot];
-  document.getElementById("themeLine").textContent =
-    currentSlot === "afternoon" ? e.theme : s.theme;
   document.getElementById("verseText").textContent = s.verse;
   document.getElementById("verseRef").textContent = s.ref + " (KJV)";
   document.getElementById("affirmText").textContent = s.affirmation;
   document.getElementById("actionText").textContent = s.action;
   document.getElementById("greetLine").textContent = S.greet;
   document.getElementById("greetSlot").textContent = S.name + " · " + S.title;
+  document.getElementById("slotCaption").textContent = S.name + " · " + S.title;
   const box = document.getElementById("sceneBox");
   box.setAttribute("data-time", currentSlot);
   document.getElementById("sceneArt").innerHTML = sceneSVG(currentSlot, seasonForDay(currentDay));
-  const nowSlot = slotForNow();
-  SLOT_ORDER.forEach(function(name){
-    const tab = document.getElementById("tab-" + name);
-    tab.classList.toggle("on", name === currentSlot);
-    tab.classList.toggle("now", name === nowSlot);
-    tab.setAttribute("aria-selected", name === currentSlot ? "true" : "false");
-  });
   resetVeil();
   updateSaveBtn();
 }
@@ -1100,14 +1078,6 @@ function revealPhase(i){
       document.getElementById("cover" + idx).addEventListener("click", function(){ revealPhase(idx); });
     })(i);
   }
-  SLOT_ORDER.forEach(function(name){
-    document.getElementById("tab-" + name).addEventListener("click", function(){
-      if (currentSlot !== name){
-        currentSlot = name;
-        renderSlot();
-      }
-    });
-  });
 })();
 function renderSaved(){
   const list = document.getElementById("savedList");
@@ -1137,6 +1107,7 @@ function renderSaved(){
     open.textContent = "Day " + d + " · " + SLOTS[sl].name + ": " + SLOTS[sl].title +
       (s ? " · " + s.ref : "");
     open.addEventListener("click", function(){
+      followClock = false;
       currentSlot = sl;
       render(d);
     });
@@ -1155,18 +1126,76 @@ function renderSaved(){
     list.appendChild(row);
   });
 }
+function closeControlPanels(){
+  document.getElementById("themePanel").hidden = true;
+  document.getElementById("navPanel").hidden = true;
+  document.getElementById("themeTab").setAttribute("aria-expanded", "false");
+  document.getElementById("navTab").setAttribute("aria-expanded", "false");
+}
+(function wireControlPanels(){
+  const themeTab = document.getElementById("themeTab");
+  const navTab = document.getElementById("navTab");
+  const themePanel = document.getElementById("themePanel");
+  const navPanel = document.getElementById("navPanel");
+  function toggle(panel, tab){
+    const willOpen = panel.hidden;
+    closeControlPanels();
+    if (willOpen){
+      panel.hidden = false;
+      tab.setAttribute("aria-expanded", "true");
+    }
+  }
+  themeTab.addEventListener("click", function(ev){ ev.stopPropagation(); toggle(themePanel, themeTab); });
+  navTab.addEventListener("click", function(ev){ ev.stopPropagation(); toggle(navPanel, navTab); });
+  document.addEventListener("click", function(ev){
+    if (ev.target && ev.target.closest &&
+        !ev.target.closest(".iconrow") && !ev.target.closest(".cpanel"))
+      closeControlPanels();
+  });
+})();
+/* The clock watcher: the time of day follows the visitor's clock on its
+   own, and when the date turns while the app stands open, the whole app
+   rolls over to the new day, scheme, scene, and content included. */
+let lastToday = todayDayNumber();
+function clockTick(){
+  const t = todayDayNumber();
+  if (t !== lastToday){
+    lastToday = t;
+    followClock = true;
+    currentSlot = slotForNow();
+    render(t);
+    return;
+  }
+  if (followClock){
+    const s = slotForNow();
+    if (s !== currentSlot){
+      currentSlot = s;
+      renderSlot();
+    }
+  }
+}
+setInterval(clockTick, 30000);
+document.addEventListener("visibilitychange", function(){
+  if (!document.hidden) clockTick();
+});
+function browseTo(day){
+  followClock = true;
+  currentSlot = slotForNow();
+  render(day);
+  closeControlPanels();
+}
 document.getElementById("prevBtn").addEventListener("click", function(){
-  render(currentDay === 1 ? 365 : currentDay - 1);
+  browseTo(currentDay === 1 ? 365 : currentDay - 1);
 });
 document.getElementById("nextBtn").addEventListener("click", function(){
-  render(currentDay === 365 ? 1 : currentDay + 1);
+  browseTo(currentDay === 365 ? 1 : currentDay + 1);
 });
 document.getElementById("todayBtn").addEventListener("click", function(){
-  render(todayDayNumber());
+  browseTo(todayDayNumber());
 });
 document.getElementById("jumpBtn").addEventListener("click", function(){
   const v = parseInt(document.getElementById("dayJump").value, 10);
-  if(v >= 1 && v <= 365) render(v);
+  if(v >= 1 && v <= 365) browseTo(v);
   else toast("Type a day number from 1 to 365.");
 });
 document.getElementById("dateBtn").addEventListener("click", function(){
@@ -1176,6 +1205,8 @@ document.getElementById("dateBtn").addEventListener("click", function(){
   const d = new Date(parseInt(parts[0],10), parseInt(parts[1],10) - 1, parseInt(parts[2],10));
   const start = new Date(d.getFullYear(), 0, 0);
   const n = Math.floor((d - start) / 86400000);
+  followClock = true;
+  currentSlot = slotForNow();
   render(Math.min(365, Math.max(1, n)));
 });
 document.getElementById("saveBtn").addEventListener("click", function(){
