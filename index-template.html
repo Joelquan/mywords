@@ -450,16 +450,22 @@
      bottom nav, and the page never scrolls. A fit stepper shrinks the
      scene, spacing, and type only when a long day needs the room.
      Below 740px the page flows and scrolls as it did before. */
+  /* Fail safe floors (Nov 12, 2026): the lock height hangs off
+     100dvh, which an in-app WebKit can resolve far smaller than the
+     visible viewport. These minimums are inert whenever dvh resolves
+     honestly (the lock range always yields 616px or more) and hold
+     the whole composition up when it does not, so the page scrolls
+     a little on a very short screen instead of blanking the card. */
   #view-home{
     --scene-h:clamp(118px, 20dvh, 168px);
     display:flex;flex-direction:column;
     height:calc(100dvh - 124px);
-    min-height:0;
+    min-height:600px;
   }
   #view-home[hidden]{display:none;}
   #view-home header{flex:none;}
   #view-home .card{
-    flex:1 1 auto;min-height:0;
+    flex:1 1 auto;min-height:340px;
     display:flex;flex-direction:column;
     margin-top:10px;
   }
@@ -467,7 +473,7 @@
   #view-home .sealrow{flex:none;}
   #view-home section.block{
     display:flex;flex-direction:column;
-    flex:1 1 0;min-height:0;
+    flex:1 1 auto;min-height:100px;
   }
   #view-home .cover{flex:1;justify-content:center;}
   #view-home .phase-body{overflow:hidden;flex:1;min-height:0;}
@@ -531,9 +537,18 @@
   #view-home[data-fit="5"] .cover .cover-hint{font-size:.74rem;}
   @media (max-height:739px){
     #view-home{height:auto;display:block;}
-    #view-home section.block{display:block;}
+    #view-home .card{display:block;}
+    #view-home section.block{display:block;flex:none;min-height:0;}
     #view-home .phase-body{overflow:visible;}
   }
+  /* Fail safe flow (Nov 12, 2026): fitHome sets data-flow when the
+     flex lock still leaves a cover collapsed after every floor and
+     fit step. Home then renders in the same plain block flow as the
+     under-740px fallback: taller than the screen if it must be,
+     scrollable, and never missing its card. */
+  #view-home[data-flow="1"]{height:auto;min-height:0;display:block;}
+  #view-home[data-flow="1"] section.block{display:block;min-height:0;}
+  #view-home[data-flow="1"] .phase-body{overflow:visible;}
   .card{
     --slot-edge:#DFA53A;
     box-shadow:
@@ -1158,6 +1173,24 @@ function fitHome(){
   const home = document.getElementById("view-home");
   if (!home || home.hidden) return;
   home.removeAttribute("data-fit");
+  home.removeAttribute("data-flow");
+  /* Fail safe (Nov 12, 2026): if the flex lock ever leaves a visible
+     cover collapsed (an in-app WebKit once resolved 100dvh far below
+     the visible height and the card blanked to its caption), fall
+     back to plain block flow rather than show a void. */
+  const collapsed = function(){
+    const card = document.querySelector("#view-home .card");
+    if (card && card.clientHeight < 200) return true;
+    for (let i = 0; i < 3; i++){
+      const c = document.getElementById("cover" + i);
+      if (c && c.style.display !== "none" && c.clientHeight < 48) return true;
+    }
+    return false;
+  };
+  if (collapsed()){
+    home.setAttribute("data-flow", "1");
+    return;
+  }
   let step = 0;
   const over = function(){
     for (let i = 0; i < 3; i++){
@@ -1183,6 +1216,10 @@ function fitHome(){
   while (step < 5 && over()){
     step++;
     home.setAttribute("data-fit", String(step));
+  }
+  if (collapsed()){
+    home.removeAttribute("data-fit");
+    home.setAttribute("data-flow", "1");
   }
 }
 function render(day){
