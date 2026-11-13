@@ -85,7 +85,7 @@
     align-items:center;
     margin:16px 0 18px;
   }
-  nav.bar button, .jump button{
+  nav.bar button{
     font-family:inherit;
     background:linear-gradient(180deg, var(--nav-bg-a), var(--nav-bg-b));
     color:var(--nav-ink);
@@ -97,29 +97,14 @@
     box-shadow:0 4px 14px var(--shadow2), inset 0 1px 0 var(--hl);
     transition:background .2s, transform .12s, box-shadow .12s;
   }
-  nav.bar button:hover, .jump button:hover{
+  nav.bar button:hover{
     background:linear-gradient(180deg, var(--nav-hover-a), var(--nav-hover-b));
     transform:translateY(-1px);
   }
-  nav.bar button:active, .jump button:active{
+  nav.bar button:active{
     transform:translateY(1px);
     box-shadow:0 2px 8px var(--shadow2), inset 0 2px 6px rgba(0,0,0,.3);
   }
-  .jump{display:flex;gap:6px;align-items:center;}
-  .jump input{
-    font-family:inherit;
-    width:74px;
-    padding:9px;
-    border-radius:10px;
-    border:1px solid var(--nav-border);
-    background:var(--field-bg);
-    color:var(--nav-ink);
-    color-scheme:dark;
-    font-size:.9rem;
-    box-shadow:inset 0 2px 6px rgba(0,0,0,.3);
-  }
-  body[data-theme="papyrus"] .jump input{color-scheme:light;}
-  .jump input::placeholder{color:var(--page-label);}
   button:focus-visible, input:focus-visible{outline:2px solid var(--label);outline-offset:2px;}
   .card{
     position:relative;
@@ -233,7 +218,7 @@
     display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;
     margin:14px 0 4px;
   }
-  .biblebar select, .biblebar button{
+  .biblebar select, .biblebar button, .verbtn{
     font-family:inherit;font-size:.92rem;cursor:pointer;
     background:linear-gradient(180deg, var(--nav-bg-a), var(--nav-bg-b));
     color:var(--nav-ink);border:1px solid var(--nav-border);border-radius:10px;
@@ -259,6 +244,9 @@
   }
   .biblebody p.bv.hl{background:var(--ghost);border-radius:8px;box-shadow:0 0 0 7px var(--ghost);}
   .biblebody .bibleloading{color:var(--label);font-size:.98rem;line-height:1.6;text-align:center;}
+  .verbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;margin:14px 0 0;}
+  .verbtn.on{font-weight:bold;text-decoration:underline;text-underline-offset:3px;}
+  .nkjvnote{text-align:center;color:var(--label);font-size:.74rem;line-height:1.5;margin:10px auto 0;max-width:520px;}
   .settingsbox{
     background:
       var(--tex-card),
@@ -272,6 +260,16 @@
     text-align:center;font-size:.74rem;letter-spacing:.32em;text-transform:uppercase;
     color:var(--label);font-weight:bold;margin:22px 0 2px;
   }
+  .settingshead{
+    display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+    background:none;border:none;cursor:pointer;font-family:inherit;
+    text-align:center;font-size:.74rem;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--label);font-weight:bold;margin:20px 0 2px;padding:4px 0;
+  }
+  .settingsbox .settingshead:first-of-type{margin-top:0;}
+  .settingshead .chev{font-size:.95rem;letter-spacing:0;transition:transform .2s;}
+  .settingshead[aria-expanded="true"] .chev{transform:rotate(45deg);}
+  .settingspanel{padding-top:6px;}
   .slotcaption{
     padding:16px 20px 0;text-align:center;
     font-size:.76rem;letter-spacing:.3em;text-transform:uppercase;color:var(--label);
@@ -585,6 +583,7 @@
         <h2>The Verse</h2>
         <p class="verse-text" id="verseText"></p>
         <p class="verse-ref" id="verseRef"></p>
+        <p class="nkjvnote" id="homeNkjvNote" hidden></p>
       </div>
     </section>
     <section class="block affirmation">
@@ -619,6 +618,13 @@
 
   <div class="view" id="view-bible" hidden>
     <div class="viewhead">Bible</div>
+    <div class="verbar" role="group" aria-label="Bible version">
+      <button type="button" class="verbtn" data-bible-version="kjv">KJV</button>
+      <button type="button" class="verbtn" data-bible-version="nkjv">NKJV</button>
+      <button type="button" class="verbtn" data-bible-version="web">WEB</button>
+      <button type="button" class="verbtn" data-bible-version="asv">ASV</button>
+      <button type="button" class="verbtn" data-bible-version="bbe">BBE</button>
+    </div>
     <div class="biblebar">
       <select id="bookSel" aria-label="Book"></select>
       <select id="chapSel" aria-label="Chapter"></select>
@@ -626,6 +632,7 @@
     </div>
     <div class="biblename" id="bibleName"></div>
     <div class="biblebody" id="bibleBody"><p class="bibleloading">The Bible opens here. Choose a book and a chapter, or tap Today's verse.</p></div>
+    <div class="nkjvnote" id="bibleNkjvNote" hidden></div>
   </div>
 
   <div class="view" id="view-saved" hidden>
@@ -638,20 +645,20 @@
   <div class="view" id="view-settings" hidden>
     <div class="viewhead">Settings</div>
     <div class="settingsbox">
-  <div class="themelinks" role="group" aria-label="Theme">
-    <span>Theme:</span>
-    <a href="#" class="tlink" data-set-theme="river">Default</a><span class="tsep" aria-hidden="true">&middot;</span><a href="#" class="tlink" data-set-theme="rot24">Color</a><span class="tsep" aria-hidden="true">&middot;</span><a href="#" class="tlink" data-set-theme="metal">Metal</a><span class="tsep" aria-hidden="true">&middot;</span><a href="#" class="tlink" data-set-theme="papyrus">Papyrus</a>
-  </div>
-      <div class="settingslabel">Day</div>
-    <nav class="bar">
-      <button id="prevBtn" type="button">Prev Day</button>
-      <button id="todayBtn" type="button">Today</button>
-      <button id="nextBtn" type="button">Next Day</button>
-      <span class="jump">
-        <input id="dayJump" type="number" min="1" max="365" placeholder="Day">
-        <button id="jumpBtn" type="button">Go</button>
-      </span>
-    </nav>
+<button type="button" class="settingshead" id="themeHead" aria-expanded="false" aria-controls="themePanel">Theme <span class="chev" aria-hidden="true">+</span></button>
+      <div class="settingspanel" id="themePanel" hidden>
+        <div class="themelinks" role="group" aria-label="Theme">
+          <a href="#" class="tlink" data-set-theme="river">Default</a><span class="tsep" aria-hidden="true">&middot;</span><a href="#" class="tlink" data-set-theme="rot24">Color</a><span class="tsep" aria-hidden="true">&middot;</span><a href="#" class="tlink" data-set-theme="metal">Metal</a><span class="tsep" aria-hidden="true">&middot;</span><a href="#" class="tlink" data-set-theme="papyrus">Papyrus</a>
+        </div>
+      </div>
+      <button type="button" class="settingshead" id="dayHead" aria-expanded="false" aria-controls="dayPanel">Day <span class="chev" aria-hidden="true">+</span></button>
+      <div class="settingspanel" id="dayPanel" hidden>
+        <nav class="bar">
+          <button id="prevBtn" type="button">Prev Day</button>
+          <button id="todayBtn" type="button">Today</button>
+          <button id="nextBtn" type="button">Next Day</button>
+        </nav>
+      </div>
     </div>
   </div>
 </div>
@@ -1239,8 +1246,7 @@ function renderSlot(){
   if(!e) return;
   const s = e[currentSlot];
   const S = SLOTS[currentSlot];
-  document.getElementById("verseText").textContent = s.verse;
-  document.getElementById("verseRef").textContent = s.ref + " (KJV)";
+  applyHomeVerse();
   document.getElementById("affirmText").textContent = s.affirmation;
   document.getElementById("actionText").textContent = s.action;
   document.getElementById("greetLine").textContent = S.greet;
@@ -1378,21 +1384,83 @@ function showView(name){
   }
 })();
 
-/* The Bible tab: the whole KJV in one file, fetched only when the tab
-   is first opened, so Home stays fast. Reading only. */
-let BIBLE = null, bibleLoading = false, bibleBook = 0, bibleChap = 1;
+/* The Bible tab: five versions (KJV, NKJV, WEB, ASV, BBE), each in its
+   own file, fetched only when that version is chosen, so Home stays fast.
+   The choice is remembered on the device, and the Home daily verse
+   follows it. Reading only. */
+const BIBLE_VERSIONS = [
+  { id: "kjv", name: "KJV", file: "bible.json" },
+  { id: "nkjv", name: "NKJV", file: "bible-nkjv.json" },
+  { id: "web", name: "WEB", file: "bible-web.json" },
+  { id: "asv", name: "ASV", file: "bible-asv.json" },
+  { id: "bbe", name: "BBE", file: "bible-bbe.json" }
+];
+const BIBLE_VERSION_KEY = "dailyWordFrameBibleVersion";
+const NKJV_COPY = "The Holy Bible, New King James Version\u00ae \u00a9 1982 by Thomas Nelson, Inc. All Rights Reserved";
+let bibleVersion = "kjv";
+try {
+  const storedVersion = localStorage.getItem(BIBLE_VERSION_KEY);
+  if (BIBLE_VERSIONS.some(function(v){ return v.id === storedVersion; })) bibleVersion = storedVersion;
+} catch (err) {}
+const bibleDataCache = {};
+const bibleDataPending = {};
+let BIBLE = null, bibleBook = 0, bibleChap = 1;
+function bibleVersionMeta(id){
+  return BIBLE_VERSIONS.find(function(v){ return v.id === id; });
+}
+function loadBibleData(id){
+  if (bibleDataCache[id]) return Promise.resolve(bibleDataCache[id]);
+  if (bibleDataPending[id]) return bibleDataPending[id];
+  bibleDataPending[id] = fetch(bibleVersionMeta(id).file).then(function(r){ return r.json(); }).then(function(d){
+    bibleDataCache[id] = d;
+    delete bibleDataPending[id];
+    return d;
+  }).catch(function(){
+    delete bibleDataPending[id];
+    return null;
+  });
+  return bibleDataPending[id];
+}
+function markVersionButtons(){
+  document.querySelectorAll(".verbtn").forEach(function(b){
+    b.classList.toggle("on", b.getAttribute("data-bible-version") === bibleVersion);
+  });
+}
 function ensureBible(){
-  if (BIBLE || bibleLoading) return;
-  bibleLoading = true;
-  fetch("bible.json").then(function(r){ return r.json(); }).then(function(d){
+  const want = bibleVersion;
+  if (bibleDataCache[want]){
+    BIBLE = bibleDataCache[want];
+    buildBiblePickers();
+    renderBibleChapter();
+    return;
+  }
+  document.getElementById("bibleBody").innerHTML =
+    "<p class=\"bibleloading\">Loading the " + bibleVersionMeta(want).name + " Bible\u2026</p>";
+  loadBibleData(want).then(function(d){
+    if (bibleVersion !== want) return;
+    if (!d){
+      document.getElementById("bibleBody").innerHTML =
+        "<p class=\"bibleloading\">The Bible could not be loaded. Check your connection and open the tab again.</p>";
+      return;
+    }
     BIBLE = d;
     buildBiblePickers();
     renderBibleChapter();
-  }).catch(function(){
-    bibleLoading = false;
-    document.getElementById("bibleBody").innerHTML =
-      "<p class=\"bibleloading\">The Bible could not be loaded. Check your connection and open the tab again.</p>";
   });
+}
+function setBibleVersion(id){
+  if (!bibleVersionMeta(id)) return;
+  bibleVersion = id;
+  try { localStorage.setItem(BIBLE_VERSION_KEY, id); } catch (err) {}
+  markVersionButtons();
+  BIBLE = bibleDataCache[id] || null;
+  if (BIBLE){
+    buildBiblePickers();
+    renderBibleChapter();
+  } else {
+    ensureBible();
+  }
+  applyHomeVerse();
 }
 function buildBiblePickers(){
   const bs = document.getElementById("bookSel");
@@ -1425,6 +1493,7 @@ function renderBibleChapter(highlightVerse){
   document.getElementById("bibleName").textContent = book.name + " " + bibleChap;
   document.getElementById("bookSel").value = bibleBook;
   document.getElementById("chapSel").value = bibleChap;
+  document.getElementById("bibleNkjvNote").hidden = bibleVersion !== "nkjv";
   const body = document.getElementById("bibleBody");
   body.innerHTML = "";
   book.chapters[bibleChap - 1].forEach(function(text, i){
@@ -1443,6 +1512,50 @@ function renderBibleChapter(highlightVerse){
     if (el) setTimeout(function(){ el.scrollIntoView({ block: "center" }); }, 60);
   }
 }
+/* The daily verse follows the version picker. KJV is the DATA text itself,
+   byte for byte; any other version is looked up by the segment's own
+   reference, ranges joined in order. If a verse is absent or empty in the
+   chosen version, the KJV text stands, honestly labelled. */
+const REF_PATTERN = /^(.+) (\d+):(\d+)(?:-(\d+))?$/;
+function lookupVerse(data, ref){
+  const m = REF_PATTERN.exec(ref);
+  if (!m || !data) return null;
+  const chap = parseInt(m[2], 10), from = parseInt(m[3], 10), to = parseInt(m[4] || m[3], 10);
+  for (let i = 0; i < data.books.length; i++){
+    if (data.books[i].name === m[1]){
+      const ch = data.books[i].chapters[chap - 1];
+      if (!ch || to > ch.length) return null;
+      const parts = [];
+      for (let v = from; v <= to; v++){
+        if (!ch[v - 1] || !ch[v - 1].trim()) return null;
+        parts.push(ch[v - 1]);
+      }
+      return parts.join(" ");
+    }
+  }
+  return null;
+}
+function resolveVerse(s){
+  if (bibleVersion === "kjv") return { text: s.verse, label: s.ref + " (KJV)", nkjv: false };
+  const data = bibleDataCache[bibleVersion];
+  if (!data){
+    loadBibleData(bibleVersion).then(function(){
+      if (bibleDataCache[bibleVersion]) applyHomeVerse();
+    });
+    return { text: s.verse, label: s.ref + " (KJV)", nkjv: false };
+  }
+  const text = lookupVerse(data, s.ref);
+  if (text === null) return { text: s.verse, label: s.ref + " (KJV)", nkjv: false };
+  return { text: text, label: s.ref + " (" + bibleVersionMeta(bibleVersion).name + ")", nkjv: bibleVersion === "nkjv" };
+}
+function applyHomeVerse(){
+  const e = DATA[currentDay - 1];
+  if (!e) return;
+  const r = resolveVerse(e[currentSlot]);
+  document.getElementById("verseText").textContent = r.text;
+  document.getElementById("verseRef").textContent = r.label;
+  document.getElementById("homeNkjvNote").hidden = !r.nkjv;
+}
 (function wireBible(){
   document.getElementById("bookSel").addEventListener("change", function(){
     bibleBook = parseInt(this.value, 10);
@@ -1454,9 +1567,17 @@ function renderBibleChapter(highlightVerse){
     bibleChap = parseInt(this.value, 10);
     renderBibleChapter();
   });
+  document.querySelectorAll(".verbtn").forEach(function(b){
+    b.addEventListener("click", function(){
+      setBibleVersion(b.getAttribute("data-bible-version"));
+    });
+  });
+  document.getElementById("bibleNkjvNote").textContent = NKJV_COPY;
+  document.getElementById("homeNkjvNote").textContent = NKJV_COPY;
+  markVersionButtons();
   document.getElementById("todayVerseBtn").addEventListener("click", function(){
     const ref = DATA[currentDay - 1][currentSlot].ref;
-    const m = /^(.+) (\d+):(\d+)$/.exec(ref);
+    const m = REF_PATTERN.exec(ref);
     if (!m) return;
     const jump = function(){
       for (let i = 0; i < BIBLE.books.length; i++){
@@ -1518,11 +1639,17 @@ document.getElementById("nextBtn").addEventListener("click", function(){
 document.getElementById("todayBtn").addEventListener("click", function(){
   browseTo(todayDayNumber());
 });
-document.getElementById("jumpBtn").addEventListener("click", function(){
-  const v = parseInt(document.getElementById("dayJump").value, 10);
-  if(v >= 1 && v <= 365) browseTo(v);
-  else toast("Type a day number from 1 to 365.");
-});
+function wireSettingsDisclosure(btnId, panelId){
+  const btn = document.getElementById(btnId);
+  const panel = document.getElementById(panelId);
+  btn.addEventListener("click", function(){
+    const open = btn.getAttribute("aria-expanded") === "true";
+    btn.setAttribute("aria-expanded", open ? "false" : "true");
+    panel.hidden = open;
+  });
+}
+wireSettingsDisclosure("themeHead", "themePanel");
+wireSettingsDisclosure("dayHead", "dayPanel");
 document.getElementById("saveBtn").addEventListener("click", function(){
   let saved = getSaved();
   const key = saveKey();
@@ -1541,9 +1668,10 @@ document.getElementById("saveBtn").addEventListener("click", function(){
 function shareTextForDay(){
   const e = DATA[currentDay - 1];
   const s = e[currentSlot];
+  const rv = resolveVerse(s);
   const S = SLOTS[currentSlot];
   return "My Words \u00b7 Day " + currentDay + " \u00b7 " + S.name + ": " + S.title + "\n\n" +
-    "VERSE\n" + s.verse + "\n" + s.ref + " (KJV)\n\n" +
+    "VERSE\n" + rv.text + "\n" + rv.label + (rv.nkjv ? "\n" + NKJV_COPY : "") + "\n\n" +
     "AFFIRMATION\n" + s.affirmation + "\n\n" +
     "ACTION\n" + s.action;
 }
@@ -1587,6 +1715,7 @@ function wrapLines(ctx, text, maxWidth){
   return lines;
 }
 function buildCardCanvas(e, slotLabel){
+  const rv = resolveVerse(e);
   const pal = cardPal();
   const W = 1080;
   const marginX = 92, topPad = pal.seal ? 330 : 104, bottomPad = 140;
@@ -1599,7 +1728,7 @@ function buildCardCanvas(e, slotLabel){
     const labelH = 32 * scale + 22, refH = 42 * scale + 20, gap = 54 * scale;
     const divH = Math.round(42 * scale);
     measure.font = vs + "px Georgia, 'Times New Roman', serif";
-    const verseLines = wrapLines(measure, e.verse, maxW);
+    const verseLines = wrapLines(measure, rv.text, maxW);
     measure.font = bs + "px Georgia, 'Times New Roman', serif";
     const affLines = wrapLines(measure, e.affirmation, maxW);
     const actLines = wrapLines(measure, e.action, maxW);
@@ -1707,7 +1836,7 @@ function buildCardCanvas(e, slotLabel){
   drawDivider();
   ctx.font = "italic " + Math.round(38 * s) + "px Georgia, 'Times New Roman', serif";
   ctx.fillStyle = pal.ref;
-  ctx.fillText(e.ref + " (KJV)", marginX, y + 6);
+  ctx.fillText(rv.label, marginX, y + 6);
   y += layout.refH + layout.gap;
   drawLabel("THE AFFIRMATION");
   drawLines(layout.affLines, layout.bs, 1.5, pal.body);
@@ -1725,6 +1854,10 @@ function buildCardCanvas(e, slotLabel){
   ctx.fillStyle = pal.foot;
   ctx.textAlign = "center";
   ctx.fillText("My Words", W / 2, H - 96);
+  if (rv.nkjv){
+    ctx.font = "20px Georgia, 'Times New Roman', serif";
+    ctx.fillText(NKJV_COPY, W / 2, H - 48);
+  }
   try { ctx.letterSpacing = "0px"; } catch(err){}
   ctx.textAlign = "left";
   return canvas;
@@ -1766,6 +1899,7 @@ document.getElementById("sharePicBtn").addEventListener("click", function(){
   }, "image/png");
 });
 render(currentDay);
+if (bibleVersion !== "kjv") loadBibleData(bibleVersion).then(function(){ if (bibleDataCache[bibleVersion]) applyHomeVerse(); });
 </script>
 </body>
 </html>
